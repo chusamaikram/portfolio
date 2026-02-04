@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ArrowDown, Github, Linkedin, Twitter, Download } from 'lucide-react';
+import { Github, Linkedin, Twitter, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 

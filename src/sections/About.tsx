@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Code, Palette, Zap, Globe, Award, Coffee } from 'lucide-react';
+import { Code, Palette, Zap, Award, Coffee } from 'lucide-react';
 import profile from '../images/profile.jpg';
 
 const stats = [

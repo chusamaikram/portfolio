@@ -1,4 +1,4 @@
-import { Code2, Heart, ArrowUp } from 'lucide-react';
+import { Code2, ArrowUp } from 'lucide-react';
 
 const footerLinks = [
   {
