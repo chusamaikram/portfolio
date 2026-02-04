@@ -70,7 +70,7 @@ export default function Navigation({ scrollY }: NavigationProps) {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center group-hover:glow-cyan transition-all duration-300">
               <Code2 className="w-5 h-5 text-background" />
             </div>
-            <span className="text-xl font-bold text-gradient">Usama.Dev</span>
+            <span className="text-xl font-bold text-gradient">Usama.Code</span>
           </a>
 
           {/* Desktop Navigation */}

@@ -124,7 +124,7 @@ export default function Projects() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-10">
           {filteredProjects.map((project, index) => (
             <div
               key={project.id}
@@ -203,8 +203,8 @@ export default function Projects() {
           <Button
             variant="outline"
             size="lg"
-            className="border-white/20 text-foreground hover:bg-white/5"
-            onClick={() => window.open('https://github.com/yourusername', '_blank')}
+            className="border-white/20 text-foreground hover:bg-white/5 hover:text-gradient"
+            onClick={() => window.open('https://github.com/chusamaikram', '_blank')}
           >
             <Github className="w-4 h-4 mr-2" />
             View More on GitHub
