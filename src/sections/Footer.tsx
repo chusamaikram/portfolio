@@ -46,7 +46,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative pt-20 pb-8 border-t border-white/5">
+    <footer className="relative pt-10 pb-8 border-t border-white/5">
       {/* Background gradient */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/5 rounded-full blur-[100px]" />

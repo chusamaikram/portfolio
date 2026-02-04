@@ -125,7 +125,7 @@ function MarqueeRow({
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-20 md:py-32 relative">
+    <section id="skills" className="py-10 md:py-20 relative">
       {/* Add marquee animations to global styles */}
       <style>{`
         @keyframes marquee-left {
