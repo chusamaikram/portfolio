@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ExternalLink, Github } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../components/ui/button';
 
 import Zeeframes from "../images/zeeframes-thumbnail.png"
 import Dentalook from "../images/dentalook-thumbnail.png"

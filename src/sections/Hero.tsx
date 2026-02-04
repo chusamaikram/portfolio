@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Github, Linkedin, Twitter, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../components/ui/button';
 
 
 export default function Hero() {
