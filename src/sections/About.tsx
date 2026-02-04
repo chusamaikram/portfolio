@@ -135,7 +135,7 @@ export default function About() {
                 Next.js
               </div>
               <div className="absolute top-1/2 -right-4 px-4 py-2 rounded-xl glass text-sm font-medium text-purple-400 animate-float" style={{ animationDelay: '2s' }}>
-               Tailwind Css
+                Tailwind Css
               </div>
             </div>
           </div>
@@ -166,20 +166,22 @@ export default function About() {
             {/* Personal Info */}
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="glass rounded-xl p-4">
-                <div className="text-sm text-muted-foreground mb-1">Location</div>
-                <div className="font-medium text-foreground">Lahore, Pakistan</div>
+                <span className="text-sm text-muted-foreground mb-1">Location</span>
+                <p className="font-medium text-foreground">Lahore, Pakistan</p>
               </div>
               <div className="glass rounded-xl p-4">
                 <div className="text-sm text-muted-foreground mb-1">Email</div>
-                <div className="font-medium text-foreground">usama.code404@gmail.com</div>
+                <div className="font-medium text-foreground text-sm break-all">
+                  usama.code404@gmail.com
+                </div>
               </div>
               <div className="glass rounded-xl p-4">
-                <div className="text-sm text-muted-foreground mb-1">Experience</div>
-                <div className="font-medium text-foreground">3+ Months</div>
+                <span className="text-sm text-muted-foreground mb-1">Experience</span>
+                <p className="font-medium text-foreground">3+ Months</p>
               </div>
               <div className="glass rounded-xl p-4">
-                <div className="text-sm text-muted-foreground mb-1">Availability</div>
-                <div className="font-medium text-cyan-400">Open to Work</div>
+                <span className="text-sm text-muted-foreground mb-1">Availability</span>
+                <p className="font-medium text-cyan-400">Open to Work</p>
               </div>
             </div>
           </div>
