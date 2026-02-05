@@ -110,9 +110,8 @@ export default function Hero() {
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <span className="text-foreground">Hi, I'm </span>
-            <span className="text-gradient">Usama Ikram</span>
+          <h1 className="text-4xl text-gradient sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            Usama Ikram
           </h1>
 
           {/* Subtitle */}
