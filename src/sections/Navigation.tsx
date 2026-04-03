@@ -2,10 +2,6 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Code2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
-interface NavigationProps {
-  scrollY: number;
-}
-
 const navLinks = [
   { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
@@ -14,24 +10,20 @@ const navLinks = [
   { name: 'Contact', href: '#contact' },
 ];
 
-export default function Navigation({ scrollY }: NavigationProps) {
+export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-
-  const isScrolled = scrollY > 50;
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
       const sections = navLinks.map(link => link.href.slice(1));
-      
       for (const section of sections.reverse()) {
         const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100) {
-            setActiveSection(section);
-            break;
-          }
+        if (element && element.getBoundingClientRect().top <= 100) {
+          setActiveSection(section);
+          break;
         }
       }
     };

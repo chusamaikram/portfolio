@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { ExternalLink, Github } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
-import Zeeframes from "../images/zeeframes-thumbnail.png"
-import Dentalook from "../images/dentalook-thumbnail.png"
-import Dotit from "../images/dotit-thumbnail.png"
-import Zapta from "../images/zapta-contactus.png"
-import Weather from "../images/weather-thumbnail.png"
-import Gmhhs from "../images/gmhs-thumbnail.png"
+import Zeeframes from "../images/zeeframes-thumbnail.webp"
+import Dentalook from "../images/dentalook-thumbnail.webp"
+import Zapta from "../images/zapta-contactus.webp"
+import Weather from "../images/weather-thumbnail.webp"
+import Gmhhs from "../images/gmhs-thumbnail.webp"
+import Olyra from "../images/olyra.webp"
+import ProjectCard from '../components/ui/ProjectCard';
 
 const projects = [
   {
@@ -15,7 +16,7 @@ const projects = [
     title: 'ZeeFrames – UI/UX Replica Project',
     description: 'A pixel-perfect frontend replica of the ZeeFrames design studio website, recreated to practice layout precision, responsiveness, and modern UI structure.',
     image: Zeeframes,
-    tags: ['React.js', '', 'javascript', 'Tailwind CSS','Framer Motion'],
+    tags: ['React.js', 'javascript', 'Tailwind CSS', 'Framer Motion'],
     liveUrl: 'https://zeeframes-v03.vercel.app',
     githubUrl: 'https://github.com/chusamaikram/Zeeframes',
     featured: true,
@@ -23,13 +24,13 @@ const projects = [
   },
   {
     id: 2,
-    title: 'Dot It – Productivity & Task Manager',
-    description: 'A task management web app using static JSON data to dynamically display tasks, with search and filter functionality for easy organization.',
-    image: Dotit,
-    tags: ['React.js', 'Tailwind Css'],
-    liveUrl: 'https://dot-it-pi.vercel.app/',
-    githubUrl: 'https://github.com/chusamaikram/React-Projects/tree/master/dot-it',
-    featured: false,
+    title: 'Olyra – Health & Wellness Platform',
+    description: 'Olyra is a modern health-focused web application designed to provide users with accessible information and tools related to wellness, nutrition, and healthy living. The project focuses on delivering a clean user interface and fast performance while presenting health-related content in an engaging and organized way.',
+    image: Olyra,
+    tags: ['Next.js', 'Tailwind Css', 'Echarts', 'Lucide-react', 'Zustand'],
+    liveUrl: 'https://olyra-v02.vercel.app/',
+    githubUrl: 'https://github.com/chusamaikram/olyra',
+    featured: true,
     category: 'Web App',
   },
   {
@@ -59,7 +60,7 @@ const projects = [
     title: 'ZAPTA Contact Page – UI Replica ',
     description: 'A pixel-perfect replica of the original ZAPTA Technologies contact page built to practice layout accuracy, responsive design, and modern UI structure.',
     image: Zapta,
-    tags: ['Html5', 'Javascript', 'Codepen', 'Tailwind Css','Jquery'],
+    tags: ['Html5', 'Javascript', 'Codepen', 'Tailwind Css', 'Jquery'],
     liveUrl: 'https://gmhs-minchinabad.vercel.app/',
     githubUrl: 'https://github.com/chusamaikram/Zapta-contactUs',
     featured: false,
@@ -86,8 +87,8 @@ export default function Projects() {
   const filteredProjects = selectedCategory === 'All'
     ? projects
     : selectedCategory === 'Featured'
-    ? projects.filter(p => p.featured)
-    : projects.filter(p => p.category === selectedCategory);
+      ? projects.filter(p => p.featured)
+      : projects.filter(p => p.category === selectedCategory);
 
   return (
     <section id="projects" className="py-10 md:py-20 relative">
@@ -112,11 +113,10 @@ export default function Projects() {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-background'
-                  : 'glass text-muted-foreground hover:text-foreground hover:bg-white/5'
-              }`}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category
+                ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-background'
+                : 'glass text-muted-foreground hover:text-foreground hover:bg-white/5'
+                }`}
             >
               {category}
             </button>
@@ -125,76 +125,8 @@ export default function Projects() {
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-10">
-          {filteredProjects.map((project, index) => (
-            <div
-              key={project.id}
-              className="group glass rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-cyan-400/20 transition-all duration-300"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              {/* Project Image */}
-              <div className="w-full  aspect-video bg-gradient-to-br from-cyan-400/20 to-blue-500/20 flex items-center justify-center relative overflow-hidden">
-                <img 
-                  src={project.image} 
-                  alt={project.title}
-                  className="w-full h-full object-fill group-hover:scale-110 transition-transform duration-500"
-                  width={1800}
-                  height={870}
-                  loading='lazy'
-                />
-
-                <div className="w-full h-full bg-gradient-to-br from-cyan-400/20 to-blue-500/20 flex items-center justify-center" style={{display: 'none'}}>
-                  <div className="text-6xl font-bold text-cyan-400/20">
-                    {project.title.charAt(0)}
-                  </div>
-                </div>
-
-                {project.featured && (
-                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-cyan-400/20 text-cyan-400 text-xs font-medium">
-                    Featured
-                  </div>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-cyan-400 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.filter(tag => tag).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 rounded-md bg-white/5 text-muted-foreground text-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                
-                {/* Action Buttons */}
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    className="flex-1 bg-gradient-to-r from-cyan-400 to-blue-500 text-background font-semibold hover:scale-105 transition-transform"
-                    onClick={() => window.open(project.liveUrl, '_blank')}
-                  >
-                    <ExternalLink className="w-3 h-3 mr-1" />
-                    Live Demo
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-white/20 text-foreground hover:bg-white/5"
-                    onClick={() => window.open(project.githubUrl, '_blank')}
-                  >
-                    <Github className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
-            </div>
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} index={project.id} />
           ))}
         </div>
 

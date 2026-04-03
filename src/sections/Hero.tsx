@@ -153,7 +153,7 @@ export default function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-xl glass flex items-center justify-center text-muted-foreground hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-300 hover-lift"
-              aria-label='social-link'
+              aria-label="GitHub"
             >
               <Github className="w-5 h-5" />
             </a>
@@ -162,7 +162,7 @@ export default function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-xl glass flex items-center justify-center text-muted-foreground hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-300 hover-lift"
-              aria-label='social-link'
+              aria-label="LinkedIn"
             >
               <Linkedin className="w-5 h-5" />
             </a>
@@ -171,7 +171,7 @@ export default function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-xl glass flex items-center justify-center text-muted-foreground hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-300 hover-lift"
-              aria-label='social-link'
+              aria-label="Twitter"
             >
               <Twitter className="w-5 h-5" />
             </a>

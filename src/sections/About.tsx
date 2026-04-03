@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Code, Palette, Zap, Award, Coffee } from 'lucide-react';
-import profile from '../images/profile.jpg';
+import profile from '../images/profile.webp';
 
 const stats = [
   { icon: Code, value: 8, suffix: '+', label: 'Projects Created' },
