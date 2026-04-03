@@ -63,6 +63,7 @@ const ProjectCard = ({ project, index }: ProjectProps) => {
                 {/* Action Buttons */}
                 <div className="flex gap-2">
                     <Button
+                        aria-label='live url'
                         size="sm"
                         className="flex-1 bg-gradient-to-r from-cyan-400 to-blue-500 text-background font-semibold hover:scale-105 transition-transform"
                         onClick={() => window.open(project.liveUrl, '_blank')}
@@ -71,6 +72,7 @@ const ProjectCard = ({ project, index }: ProjectProps) => {
                         Live Demo
                     </Button>
                     <Button
+                        aria-label='github url'
                         size="sm"
                         variant="outline"
                         className="border-white/20 text-foreground hover:bg-white/5"
