@@ -136,7 +136,8 @@ export default function Hero() {
             </Button>
             <a
               href="/resume.pdf"
-              download="Usama_Ikram_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center border border-white/20 text-foreground 
              px-8 py-3 text-lg hover:bg-white/5 hover:text-gradient rounded-lg"
             >
