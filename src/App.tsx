@@ -1,44 +1,60 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import Navigation from './sections/Navigation';
-import Hero from './sections/Hero';
-import About from './sections/About';
-import Skills from './sections/Skills';
-import Projects from './sections/Projects';
-import Contact from './sections/Contact';
-import Footer from './sections/Footer';
+import { AuthProvider } from './context/AuthContext.jsx';
+import ProtectedRoute from './routes/ProtectedRoute.jsx';
+import GuestRoute from './routes/GuestRoute.jsx';
+import HomePage from './features/home/HomePage.jsx';
+import LoginPage from './features/auth/LoginPage.jsx';
+import AdminDashboard from './features/dashboard/AdminDashboard.jsx';
 
 function App() {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px]" />
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-cyan-400/5 rounded-full blur-[90px]" />
-      </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public Portfolio Route */}
+          <Route path="/" element={<HomePage />} />
 
-      <Navigation />
+          {/* Guest-only Login Gateway */}
+          <Route
+            path="/login"
+            element={
+              <GuestRoute>
+                <LoginPage />
+              </GuestRoute>
+            }
+          />
 
-      <main className="relative z-10">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Contact />
-      </main>
+          {/* Protected Admin Control Center */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-      <Footer />
+          {/* Fallback Catch-all Route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
 
-      <Toaster 
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: 'hsl(222 47% 8%)',
-            border: '1px solid hsl(217 33% 20%)',
-            color: 'hsl(210 40% 98%)',
-          },
-        }}
-      />
-    </div>
+        {/* Global High-Tech Toaster */}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#080e1e',
+              border: '1px solid rgba(34, 211, 238, 0.3)',
+              color: '#f8fafc',
+              fontFamily: 'Inter, system-ui, sans-serif',
+              boxShadow: '0 0 25px rgba(0, 0, 0, 0.6)',
+            },
+          }}
+        />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
