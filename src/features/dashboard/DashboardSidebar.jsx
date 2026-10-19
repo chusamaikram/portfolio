@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import profileImg from '../../images/profile.webp';
 
@@ -25,6 +26,7 @@ export const NAV_ITEMS = [
   { id: 'testimonials', label: 'Testimonials', icon: MessageSquareQuote, badgeKey: 'testimonials' },
   { id: 'messages', label: 'Inbound Messages', icon: Mail, badgeKey: 'unreadMessages' },
   { id: 'experience', label: 'Experience', icon: Briefcase, badgeKey: 'experience' },
+  { id: 'ai_settings', label: 'AI Integrations', icon: Sparkles },
   { id: 'telemetry', label: 'System Telemetry', icon: Activity },
   { id: 'settings', label: 'Settings & Profile', icon: Sliders },
 ];

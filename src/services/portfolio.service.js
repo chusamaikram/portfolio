@@ -202,6 +202,7 @@ export const INITIAL_PROFILE_INFO = {
   name: 'Usama Ikram',
   title: 'Principal Frontend Architect & Web Engineer',
   bio: 'Specialized in engineering sleek, modular frontend components with modern React, Tailwind CSS, and lightweight 3D graphics.',
+  avatar: '',
   location: 'Lahore, Pakistan',
   email: 'usama.code404@gmail.com',
   phone: '+92 309 8525906',
@@ -590,12 +591,34 @@ export const portfolioService = {
   /**
    * Profile Info
    */
-  getProfileInfo() {
+  async getProfileInfo() {
+    try {
+      const res = await axiosInstance.get(ENDPOINTS.PORTFOLIO.PROFILE);
+      if (res.data) {
+        setLocalData(LOCAL_STORAGE_KEYS.PROFILE, res.data);
+        return res.data;
+      }
+    } catch (e) {
+      // Local fallback
+    }
     return getLocalData(LOCAL_STORAGE_KEYS.PROFILE, INITIAL_PROFILE_INFO);
   },
 
-  updateProfileInfo(info) {
+  getProfileInfoSync() {
+    return getLocalData(LOCAL_STORAGE_KEYS.PROFILE, INITIAL_PROFILE_INFO);
+  },
+
+  async updateProfileInfo(info) {
     setLocalData(LOCAL_STORAGE_KEYS.PROFILE, info);
+    try {
+      const res = await axiosInstance.put(ENDPOINTS.PORTFOLIO.PROFILE, info);
+      if (res.data) {
+        setLocalData(LOCAL_STORAGE_KEYS.PROFILE, res.data);
+        return res.data;
+      }
+    } catch (e) {
+      // Offline fallback
+    }
     return info;
   },
 };

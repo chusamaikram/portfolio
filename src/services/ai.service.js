@@ -1,111 +1,192 @@
 import axiosInstance from '../api/axiosInstance.js';
 import { ENDPOINTS } from '../api/endpoints.js';
 
-/**
- * AI Assistant Service for Interactive Portfolio Terminal
- * Interfaces with the backend AI service with an intelligent local heuristic core fallback.
- */
-
-const FALLBACK_KNOWLEDGE = {
-  about: `Usama Ikram is a Frontend Web Developer and Architect based in Lahore, Pakistan. He specializes in React.js, Next.js, Tailwind CSS, and performance-first UI engineering. He is passionate about building clean, accessible, and high-framerate web applications.`,
-  contact: `You can reach Usama directly at usama.code404@gmail.com or by phone/WhatsApp at +92 309 8525906. His GitHub profile is github.com/chusamaikram and LinkedIn is linkedin.com/in/usama-ikram-252052182.`,
-  stack: `Usama's core tech stack comprises React 19, TypeScript, Tailwind CSS, Next.js, Vite, Three.js / React Three Fiber, Framer Motion, Zustand, and Axios with enterprise token interceptors.`,
-  projects: {
-    zeeframes: `ZeeFrames is a pixel-perfect replica of a modern creative design studio portfolio built to practice layout accuracy, micro-animations, and responsive breakpoints using React, Tailwind CSS, and Framer Motion.`,
-    olyra: `Olyra is a modern health & wellness web application featuring interactive Echarts data visualizers, Zustand state management, and an accessible multi-view layout built with Next.js and Tailwind CSS.`,
-    dentalook: `Dentalook is a specialized clinic web app with interactive charts visualizing patient flow, appointment records, and operational metrics with high performance.`,
-    gmhs: `Govt High School Minchinabad website is a community-oriented educational portal with fast load times, semantic HTML5 structure, and full responsiveness.`,
-    zapta: `ZAPTA Technologies replica focuses on complex layout grid precision, responsive form interactions, and subtle UI cues.`,
-    weather: `WeatherMate is an API integration web app demonstrating clean Axios REST integration, geolocation-based caching, and responsive UI feedback.`,
-  },
-};
-
-function generateIntelligentResponse(prompt, projectContext = null) {
-  const p = prompt.toLowerCase();
-
-  if (projectContext) {
-    const key = Object.keys(FALLBACK_KNOWLEDGE.projects).find((k) =>
-      projectContext.toLowerCase().includes(k)
-    );
-    if (key) {
-      return `[TELEMETRY // PROJECT DEEP DIVE: ${projectContext.toUpperCase()}]\n\n${
-        FALLBACK_KNOWLEDGE.projects[key]
-      }\n\nKey Architectural Highlights:\n• Component-driven modular architecture\n• High-performance styling with Tailwind CSS\n• Sub-second layout hydration & zero CLS\n• Repository: https://github.com/chusamaikram`;
-    }
-  }
-
-  if (p.includes('olyra')) {
-    return `[OLYRA PLATFORM ARCHITECTURE]\n${FALLBACK_KNOWLEDGE.projects.olyra}\n\nLive Demo: https://olyra-v02.vercel.app/\nStack: Next.js, Tailwind, Echarts, Zustand`;
-  }
-
-  if (p.includes('dentalook')) {
-    return `[DENTALOOK DASHBOARD TELEMETRY]\n${FALLBACK_KNOWLEDGE.projects.dentalook}\n\nLive Demo: https://dentalook-v2.vercel.app/\nStack: React.js, Echarts, Tailwind CSS`;
-  }
-
-  if (p.includes('zeeframes')) {
-    return `[ZEEFRAMES STUDIO UI REPLICA]\n${FALLBACK_KNOWLEDGE.projects.zeeframes}\n\nLive Demo: https://zeeframes-v03.vercel.app/\nStack: React, Tailwind CSS, Framer Motion`;
-  }
-
-  if (p.includes('contact') || p.includes('hire') || p.includes('email') || p.includes('reach') || p.includes('phone')) {
-    return `[COMMUNICATION CHANNELS OPEN]\n${FALLBACK_KNOWLEDGE.contact}\n\nStatus: Usama is currently AVAILABLE for freelance contracts and frontend engineering roles.`;
-  }
-
-  if (p.includes('skill') || p.includes('stack') || p.includes('tech') || p.includes('framework')) {
-    return `[SYSTEM CAPABILITIES & TECH STACK]\n${FALLBACK_KNOWLEDGE.stack}\n\nArchitecture Patterns:\n• Modular atomic UI component design\n• Centralized Axios interceptors with seamless JWT refresh\n• Lazy-loaded 3D WebGL (Three.js / R3F) with 60FPS frame capping\n• Route protection middleware`;
-  }
-
-  if (p.includes('experience') || p.includes('background') || p.includes('who are you') || p.includes('about')) {
-    return `[CORE PROFILE TELEMETRY]\n${FALLBACK_KNOWLEDGE.about}\n\nLocation: Lahore, Pakistan\nLanguages: English, Urdu\nMission: Transforming ideas into responsive, accessible, high-performance digital realities.`;
-  }
-
-  if (p.includes('project') || p.includes('work') || p.includes('portfolio')) {
-    return `[CATALOGED PROJECTS HIGHLIGHT]\nUsama has engineered multiple production-ready web applications:\n1. Olyra (Health & Wellness with Echarts)\n2. Dentalook (Clinic Analytics Dashboard)\n3. ZeeFrames (Studio UX Replica)\n4. GMHS Minchinabad (Educational Platform)\n5. ZAPTA Contact Page (Precision UI)\n6. WeatherMate (Real-time REST API app)\n\nAsk me about any specific project to inspect its architecture!`;
-  }
-
-  return `[USAMA-AI CORE ONLINE]\nI'm ready to answer any questions about Usama Ikram's technical stack, architecture choices, projects (ZeeFrames, Olyra, Dentalook), or contact info.\n\nTry asking:\n• "Tell me about the Olyra project architecture"\n• "What is Usama's core tech stack?"\n• "How do I get in touch with Usama?"`;
-}
-
 export const aiService = {
   /**
-   * Send prompt to AI chat service with intelligent offline fallback
+   * Fetch current AI integration settings (Admin Only)
    */
-  async sendChatMessage(prompt, history = [], context = null) {
+  async getSettings() {
     try {
-      const response = await axiosInstance.post(ENDPOINTS.AI.CHAT, {
-        prompt,
-        history,
-        context,
-      });
-      if (response.data?.reply || response.data?.message) {
-        return {
-          reply: response.data.reply || response.data.message,
-          source: 'remote-ai-agent',
-        };
-      }
+      const response = await axiosInstance.get(ENDPOINTS.AI.SETTINGS);
+      return response.data;
     } catch (error) {
-      // Offline fallback
+      const stored = localStorage.getItem('portfolio_ai_settings');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {}
+      }
+      return {
+        primary_provider: 'gemini',
+        primary_model: 'gemini-2.5-flash',
+        primary_api_key: '',
+        fallback_provider: 'groq',
+        fallback_model: 'llama-3.3-70b-versatile',
+        fallback_api_key: '',
+        temperature: 0.7,
+        system_instruction_extra: '',
+        is_active: true,
+        knowledge_version: 1,
+        enable_cache: true,
+        cache_stats: {
+          total_cached_queries: 0,
+          total_requests_served: 0,
+          api_calls_saved: 0,
+        },
+      };
     }
-
-    // Heuristic response generator
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          reply: generateIntelligentResponse(prompt, context),
-          source: 'local-heuristic-core',
-        });
-      }, 450);
-    });
   },
 
   /**
-   * Explain a specific project's architecture
+   * Save AI integration settings (Admin Only)
    */
-  async explainProject(projectTitle) {
-    return this.sendChatMessage(
-      `Please explain the architecture and design decisions for ${projectTitle}`,
-      [],
-      projectTitle
-    );
+  async updateSettings(settingsData) {
+    try {
+      const response = await axiosInstance.put(ENDPOINTS.AI.SETTINGS, settingsData);
+      localStorage.setItem('portfolio_ai_settings', JSON.stringify(response.data));
+      return response.data;
+    } catch (error) {
+      localStorage.setItem('portfolio_ai_settings', JSON.stringify(settingsData));
+      return settingsData;
+    }
+  },
+
+  /**
+   * Ping/Test an AI Provider API Key & Model
+   */
+  async testConnection({ provider, api_key, model }) {
+    const response = await axiosInstance.post(ENDPOINTS.AI.TEST, {
+      provider,
+      api_key,
+      model,
+    });
+    return response.data;
+  },
+
+  /**
+   * Flush semantic response cache
+   */
+  async flushCache() {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.AI.CACHE_FLUSH);
+      return response.data;
+    } catch (error) {
+      return { success: true, flushed_count: 0 };
+    }
+  },
+
+  /**
+   * Fetch live cache statistics
+   */
+  async getCacheStats() {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.AI.CACHE_STATS);
+      return response.data;
+    } catch (error) {
+      return { total_cached_queries: 0, total_requests_served: 0, api_calls_saved: 0 };
+    }
+  },
+
+  /**
+   * Send chat message to AI assistant (Public)
+   */
+  async sendMessage(message, history = []) {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.AI.CHAT, {
+        message,
+        history,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async sendChatMessage(message, history = []) {
+    return this.sendMessage(message, history);
+  },
+
+  /**
+   * System Health Probe (Render / Hosting Keepalive)
+   */
+  async checkHealth() {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.SYSTEM.HEALTH);
+      return response.data;
+    } catch (error) {
+      return { status: 'offline', error: error.message };
+    }
+  },
+
+  /**
+   * AI Copilot: Generate form field content (titles, descriptions, metrics, architectures)
+   */
+  async generateContent({ field_type, context = {}, instruction = '' }) {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.AI.COPILOT_GENERATE, {
+        field_type,
+        context,
+        instruction,
+      });
+      return response.data.generated_text;
+    } catch (error) {
+      // Offline fallback template
+      if (field_type === 'project_title') {
+        return `${context.title || 'Enterprise Portal'} – Next-Gen ${context.category || 'Architecture'}`;
+      } else if (field_type === 'project_description') {
+        return `A production-grade ${context.category || 'web application'} engineered with ${context.tags || 'React and Tailwind CSS'}, delivering responsive layout fidelity and high-throughput state handling.`;
+      } else if (field_type === 'project_architecture') {
+        return 'Component-driven layout with custom debounce hooks, atomic state management, and lazy route splitting.';
+      } else if (field_type === 'project_metrics') {
+        return '99% Lighthouse Accessibility, <1.1s LCP, zero layout shifts';
+      }
+      return 'Generated enterprise copy.';
+    }
+  },
+
+  /**
+   * AI Copilot: Inbound Messages Analysis & Triage
+   */
+  async analyzeInbox() {
+    try {
+      const response = await axiosInstance.get(ENDPOINTS.AI.INBOX_ANALYSIS);
+      return response.data;
+    } catch (error) {
+      return {
+        total_messages: 0,
+        unread_count: 0,
+        needs_reply_count: 0,
+        messages: [],
+        summary: 'Inbox copilot offline.',
+      };
+    }
+  },
+
+  /**
+   * AI Copilot: Draft Personalized Email Reply
+   */
+  async draftReply({ message_id, name, email, subject, message, tone = 'warm_professional' }) {
+    try {
+      const response = await axiosInstance.post(ENDPOINTS.AI.DRAFT_REPLY, {
+        message_id,
+        name,
+        email,
+        subject,
+        message,
+        tone,
+      });
+      return response.data;
+    } catch (error) {
+      const firstName = name ? name.split(' ')[0] : 'there';
+      const body = `Hi ${firstName},\n\nThank you for reaching out through my portfolio website regarding "${subject || 'your inquiry'}"!\n\nI have reviewed your message and would love to discuss how we can collaborate. Would you be open to a brief 15-minute intro call this week?\n\nWarm regards,\nUsama Ikram\nPrincipal Frontend Architect & Web Engineer`;
+      return {
+        name,
+        email,
+        subject: `Re: ${subject || 'Inquiry'}`,
+        reply_body: body,
+        mailto_url: `mailto:${email || ''}?subject=${encodeURIComponent('Re: ' + (subject || 'Inquiry'))}&body=${encodeURIComponent(body)}`,
+      };
+    }
   },
 };
 

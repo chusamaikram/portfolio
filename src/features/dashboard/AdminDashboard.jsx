@@ -19,9 +19,11 @@ import TestimonialsView from './views/TestimonialsView.jsx';
 import MessagesView from './views/MessagesView.jsx';
 import ExperienceView from './views/ExperienceView.jsx';
 import SettingsView from './views/SettingsView.jsx';
+import AISettingsView from './views/AISettingsView.jsx';
 import GlassCard from '../../components/ui/GlassCard.jsx';
 import NeonButton from '../../components/ui/NeonButton.jsx';
 import portfolioService, { ASSETS } from '../../services/portfolio.service.js';
+import aiService from '../../services/ai.service.js';
 
 export const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -57,9 +59,11 @@ export const AdminDashboard = () => {
     githubUrl: '',
     featured: false,
     architecture: '',
+    metrics: '',
   });
   const [projectErrors, setProjectErrors] = useState({});
   const [projectTouched, setProjectTouched] = useState({});
+  const [aiGeneratingField, setAiGeneratingField] = useState(null);
 
   // Preset Catalog Assets for quick selection
   const PRESET_THUMBNAILS = [
@@ -82,7 +86,7 @@ export const AdminDashboard = () => {
         portfolioService.getMessages(),
         portfolioService.getExperiences(),
       ]);
-      const prof = portfolioService.getProfileInfo();
+      const prof = await portfolioService.getProfileInfo();
 
       setProjects(p);
       setSkills(s);
@@ -135,6 +139,7 @@ export const AdminDashboard = () => {
     testimonials: 'Client Testimonials',
     messages: 'Inbound Inquiries',
     experience: 'Career Milestones',
+    ai_settings: 'AI Integrations & Failover Settings',
     telemetry: 'System Telemetry',
     settings: 'Settings & Profile',
   }[activeTab] || 'Mission Control';
@@ -242,10 +247,37 @@ export const AdminDashboard = () => {
       githubUrl: proj.githubUrl || '',
       featured: Boolean(proj.featured),
       architecture: proj.architecture || '',
+      metrics: proj.metrics || '',
     });
     setProjectErrors({});
     setProjectTouched({});
     setIsProjectModalOpen(true);
+  };
+
+  const handleAIGenerate = async (fieldType) => {
+    setAiGeneratingField(fieldType);
+    try {
+      const generated = await aiService.generateContent({
+        field_type: fieldType,
+        context: projectForm,
+      });
+
+      if (fieldType === 'project_title') {
+        handleProjectFieldChange('title', generated);
+      } else if (fieldType === 'project_description') {
+        handleProjectFieldChange('description', generated);
+      } else if (fieldType === 'project_architecture') {
+        handleProjectFieldChange('architecture', generated);
+      } else if (fieldType === 'project_metrics') {
+        handleProjectFieldChange('metrics', generated);
+      }
+
+      toast.success(`✨ AI generated ${fieldType.replace('project_', '')}!`);
+    } catch {
+      toast.error('AI Copilot generation failed');
+    } finally {
+      setAiGeneratingField(null);
+    }
   };
 
   const handleProjectFieldChange = (name, value) => {
@@ -429,9 +461,14 @@ export const AdminDashboard = () => {
   };
 
   // Profile & Settings
-  const handleUpdateProfile = (info) => {
-    portfolioService.updateProfileInfo(info);
-    setProfileInfo(info);
+  const handleUpdateProfile = async (info) => {
+    try {
+      const updated = await portfolioService.updateProfileInfo(info);
+      setProfileInfo(updated);
+      toast.success('Public profile information and avatar updated!');
+    } catch {
+      toast.error('Failed to update profile information');
+    }
   };
 
   const handleResetAllData = () => {
@@ -560,6 +597,10 @@ export const AdminDashboard = () => {
                 />
               )}
 
+              {activeTab === 'ai_settings' && (
+                <AISettingsView />
+              )}
+
               {activeTab === 'telemetry' && (
                 <SettingsView
                   profileInfo={profileInfo}
@@ -605,12 +646,24 @@ export const AdminDashboard = () => {
                 {/* Title */}
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <label className="text-slate-300">PROJECT TITLE *</label>
-                    {projectTouched.title && !projectErrors.title && projectForm.title && (
-                      <span className="text-emerald-400 flex items-center gap-1 text-[10px]">
-                        <CheckCircle2 className="w-3 h-3" /> Valid
-                      </span>
-                    )}
+                    <label className="text-slate-300 font-bold">PROJECT TITLE *</label>
+                    <div className="flex items-center gap-2">
+                      {projectTouched.title && !projectErrors.title && projectForm.title && (
+                        <span className="text-emerald-400 flex items-center gap-1 text-[10px]">
+                          <CheckCircle2 className="w-3 h-3" /> Valid
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleAIGenerate('project_title')}
+                        disabled={aiGeneratingField === 'project_title'}
+                        className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 transition-all cursor-pointer disabled:opacity-50"
+                        title="AI generates a catchy, high-impact title"
+                      >
+                        <Sparkles className={`w-3 h-3 ${aiGeneratingField === 'project_title' ? 'animate-spin' : ''}`} />
+                        <span>{aiGeneratingField === 'project_title' ? 'Generating...' : 'AI Title'}</span>
+                      </button>
+                    </div>
                   </div>
                   <input
                     type="text"
@@ -797,10 +850,17 @@ export const AdminDashboard = () => {
                 {/* Description */}
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <label className="text-slate-300">DESCRIPTION *</label>
-                    <span className="text-[10px] text-slate-400">
-                      {projectForm.description?.trim().length || 0} chars (min 10)
-                    </span>
+                    <label className="text-slate-300 font-bold">DESCRIPTION *</label>
+                    <button
+                      type="button"
+                      onClick={() => handleAIGenerate('project_description')}
+                      disabled={aiGeneratingField === 'project_description'}
+                      className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 transition-all cursor-pointer disabled:opacity-50"
+                      title="AI drafts a professional, metrics-driven description"
+                    >
+                      <Sparkles className={`w-3 h-3 ${aiGeneratingField === 'project_description' ? 'animate-spin' : ''}`} />
+                      <span>{aiGeneratingField === 'project_description' ? 'Writing...' : 'Write with AI'}</span>
+                    </button>
                   </div>
                   <textarea
                     rows={3}
@@ -889,6 +949,53 @@ export const AdminDashboard = () => {
                         {projectErrors.githubUrl}
                       </p>
                     )}
+                  </div>
+                </div>
+
+                {/* Architecture & Metrics AI Fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="text-slate-300 text-xs font-mono">ARCHITECTURE SUMMARY</label>
+                      <button
+                        type="button"
+                        onClick={() => handleAIGenerate('project_architecture')}
+                        disabled={aiGeneratingField === 'project_architecture'}
+                        className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 transition-all cursor-pointer disabled:opacity-50"
+                      >
+                        <Sparkles className={`w-2.5 h-2.5 ${aiGeneratingField === 'project_architecture' ? 'animate-spin' : ''}`} />
+                        <span>AI Arch</span>
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={projectForm.architecture || ''}
+                      onChange={(e) => handleProjectFieldChange('architecture', e.target.value)}
+                      placeholder="e.g. Modular Zustand state store with atomic layout & lazy route splitting"
+                      className="w-full bg-slate-900 border border-white/15 focus:border-cyan-400 rounded-xl px-3 py-2 text-white font-sans text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="text-slate-300 text-xs font-mono">PERFORMANCE METRICS</label>
+                      <button
+                        type="button"
+                        onClick={() => handleAIGenerate('project_metrics')}
+                        disabled={aiGeneratingField === 'project_metrics'}
+                        className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 transition-all cursor-pointer disabled:opacity-50"
+                      >
+                        <Sparkles className={`w-2.5 h-2.5 ${aiGeneratingField === 'project_metrics' ? 'animate-spin' : ''}`} />
+                        <span>AI Metrics</span>
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={projectForm.metrics || ''}
+                      onChange={(e) => handleProjectFieldChange('metrics', e.target.value)}
+                      placeholder="e.g. 99% Lighthouse, <1.1s LCP, 60fps WebGL"
+                      className="w-full bg-slate-900 border border-white/15 focus:border-cyan-400 rounded-xl px-3 py-2 text-white font-sans text-xs"
+                    />
                   </div>
                 </div>
 

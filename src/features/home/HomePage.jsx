@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../../components/layout/Navbar.jsx';
 import Footer from '../../components/layout/Footer.jsx';
 import HeroSection from './HeroSection.jsx';
+import TechMarqueeSlider from '../../components/ui/TechMarqueeSlider.jsx';
 import AboutBento from './AboutBento.jsx';
 import ProjectsGrid from './ProjectsGrid.jsx';
 import TestimonialsSection from './TestimonialsSection.jsx';
@@ -25,6 +26,7 @@ export const HomePage = () => {
 
       <main className="relative z-10">
         <HeroSection onOpenAiChat={() => setIsAiOpen(true)} />
+        <TechMarqueeSlider />
         <AboutBento />
         <ProjectsGrid onOpenAiChat={() => setIsAiOpen(true)} />
         <TestimonialsSection />

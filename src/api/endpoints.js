@@ -17,6 +17,7 @@ export const ENDPOINTS = {
     EXPERIENCE_DETAIL: (id) => `/api/v1/portfolio/experiences/${id}/`,
     MESSAGES: '/api/v1/portfolio/messages/',
     MESSAGE_DETAIL: (id) => `/api/v1/portfolio/messages/${id}/`,
+    PROFILE: '/api/v1/portfolio/profile/',
     TELEMETRY: '/api/v1/portfolio/telemetry/',
   },
   AUTH: {
@@ -27,8 +28,19 @@ export const ENDPOINTS = {
   },
   AI: {
     CHAT: '/api/v1/ai/chat/',
+    SETTINGS: '/api/v1/ai/settings/',
+    TEST: '/api/v1/ai/test/',
+    CACHE_FLUSH: '/api/v1/ai/cache/flush/',
+    CACHE_STATS: '/api/v1/ai/cache/stats/',
+    COPILOT_GENERATE: '/api/v1/ai/copilot/generate/',
+    INBOX_ANALYSIS: '/api/v1/ai/copilot/inbox-analysis/',
+    DRAFT_REPLY: '/api/v1/ai/copilot/draft-reply/',
     EXPLAIN_PROJECT: '/api/v1/ai/explain-project/',
     GENERATE_SUMMARY: '/api/v1/ai/generate-summary/',
+  },
+  SYSTEM: {
+    HEALTH: '/api/v1/health/',
+    ROOT_HEALTH: '/health/',
   },
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sliders,
   User,
@@ -12,12 +12,18 @@ import {
   Server,
   AlertCircle,
   CheckCircle2,
+  Camera,
+  Upload,
+  Image as ImageIcon,
+  Trash2,
+  RefreshCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import GlassCard from '../../../components/ui/GlassCard.jsx';
 import NeonButton from '../../../components/ui/NeonButton.jsx';
 import { API_BASE_URL, ENDPOINTS } from '../../../api/endpoints.js';
 import axiosInstance from '../../../api/axiosInstance.js';
+import profileFallbackImg from '../../../images/profile.webp';
 
 export const SettingsView = ({
   profileInfo,
@@ -30,6 +36,51 @@ export const SettingsView = ({
   const [touched, setTouched] = useState({});
   const [pingResult, setPingResult] = useState(null);
   const [isPinging, setIsPinging] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+  useEffect(() => {
+    if (profileInfo && Object.keys(profileInfo).length > 0) {
+      setProfileForm((prev) => ({ ...prev, ...profileInfo }));
+    }
+  }, [profileInfo]);
+
+  const handleAvatarFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Invalid file type', {
+        description: 'Please select a valid image file (PNG, JPG, WebP, GIF).',
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File too large', {
+        description: 'Image file size must be under 5MB.',
+      });
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const dataUrl = loadEvent.target.result;
+      setProfileForm((prev) => ({ ...prev, avatar: dataUrl }));
+      setIsUploadingAvatar(false);
+      toast.success('Avatar image loaded! Click Save to apply changes.');
+    };
+    reader.onerror = () => {
+      setIsUploadingAvatar(false);
+      toast.error('Failed reading image file');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleResetAvatar = () => {
+    setProfileForm((prev) => ({ ...prev, avatar: '' }));
+    toast.info('Reverted to default Usama Ikram profile image. Click Save to persist.');
+  };
 
   const validateField = (field, val) => {
     let err = '';
@@ -97,7 +148,6 @@ export const SettingsView = ({
     }
 
     onUpdateProfile(profileForm);
-    toast.success('Public profile information updated!');
   };
 
   const handleTestPing = async () => {
@@ -147,6 +197,93 @@ export const SettingsView = ({
         </div>
 
         <form onSubmit={handleProfileSubmit} noValidate className="space-y-4 text-xs font-mono">
+          {/* Avatar / Profile Headshot Management */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-cyan-500/20 mb-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              {/* Live Preview Box with cybernetic frame */}
+              <div className="relative group shrink-0">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.25)] bg-slate-950 relative">
+                  <img
+                    src={profileForm.avatar || profileFallbackImg}
+                    alt={profileForm.name || 'Profile Avatar'}
+                    className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {isUploadingAvatar && (
+                    <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center">
+                      <RefreshCw className="w-6 h-6 text-cyan-400 animate-spin" />
+                    </div>
+                  )}
+                </div>
+                <span className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400 text-cyan-300 font-mono text-[9px] uppercase font-bold tracking-wider">
+                  {profileForm.avatar ? 'CUSTOM' : 'DEFAULT'}
+                </span>
+              </div>
+
+              {/* Upload & Configuration controls */}
+              <div className="flex-1 space-y-3 w-full">
+                <div>
+                  <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <Camera className="w-4 h-4 text-cyan-400" />
+                    OPERATOR HEADSHOT // ABOUT SECTION IMAGE
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-sans mt-0.5">
+                    This image is dynamically synced to your public portfolio's futuristic About section. Upload a headshot file or enter an image URL.
+                  </p>
+                </div>
+
+                {/* Upload or URL fields */}
+                <div className="grid sm:grid-cols-2 gap-3 pt-1">
+                  <div>
+                    <label className="text-slate-300 block mb-1 text-[11px]">UPLOAD IMAGE (PNG, JPG, WEBP)</label>
+                    <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-950 border border-white/15 hover:border-cyan-400 text-slate-200 text-xs cursor-pointer transition-colors">
+                      <Upload className="w-4 h-4 text-cyan-400" />
+                      <span>{isUploadingAvatar ? 'Reading...' : 'Choose File...'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarFile}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="text-slate-300 block mb-1 text-[11px]">OR PASTE IMAGE URL</label>
+                    <input
+                      type="url"
+                      placeholder="https://images.unsplash.com/..."
+                      value={profileForm.avatar || ''}
+                      onChange={(e) => handleChange('avatar', e.target.value)}
+                      className="w-full bg-slate-950 border border-white/15 focus:border-cyan-400 rounded-xl px-3 py-2 text-white font-sans text-xs focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick actions: Reset to default or clear */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={handleResetAvatar}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors"
+                  >
+                    <RefreshCw className="w-3 h-3 text-cyan-400" />
+                    Reset to Default Photo
+                  </button>
+                  {profileForm.avatar && (
+                    <button
+                      type="button"
+                      onClick={() => handleChange('avatar', '')}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition-colors"
+                    >
+                      <Trash2 className="w-3 h-3 text-rose-400" />
+                      Clear Custom Avatar
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="text-slate-300 block mb-1">OPERATOR NAME *</label>
