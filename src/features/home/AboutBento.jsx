@@ -1,112 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  Code,
-  Palette,
-  Zap,
-  Award,
   Layers,
-  Cpu,
-  Server,
-  Globe,
-  Terminal,
-  ShieldCheck,
+  Zap,
+  ArrowUpRight,
   Sparkles,
-  Activity,
   CheckCircle2,
-  Copy,
-  Check,
-  Radio,
-  ExternalLink,
-  ChevronRight,
-  Sliders,
+  Box,
 } from 'lucide-react';
-import GlassCard from '../../components/ui/GlassCard.jsx';
-import SectionHeader from '../../components/ui/SectionHeader.jsx';
-import TechBadge from '../../components/ui/TechBadge.jsx';
 import profileImg from '../../images/profile.webp';
-import portfolioService, { INITIAL_PROFILE_INFO } from '../../services/portfolio.service.js';
-
-const TELEMETRY_STATS = [
-  { icon: Code, value: '8+', label: 'Production Systems', sub: 'Shipped & Live Deployments' },
-  { icon: Zap, value: '60 FPS', label: 'Frame Budget', sub: 'Hardware-Accelerated WebGL' },
-  { icon: ShieldCheck, value: '99.4%', label: 'Performance SLA', sub: 'Google Lighthouse Audit' },
-  { icon: Cpu, value: '< 150KB', label: 'Initial Payload', sub: 'Tree-Shaken Modular Chunks' },
-];
-
-const SKILL_CATEGORIES = [
-  {
-    id: 'core',
-    name: 'Frontend Core',
-    items: [
-      { name: 'HTML5 Semantic DOM & A11y', level: 95, icon: Code },
-      { name: 'CSS3 / Modern Flex & Grid', level: 92, icon: Palette },
-      { name: 'JavaScript (ES6+ / Modern)', level: 90, icon: Terminal },
-      { name: 'TypeScript Strict Mode', level: 68, icon: ShieldCheck },
-    ],
-  },
-  {
-    id: 'frameworks',
-    name: 'Frameworks & Libs',
-    items: [
-      { name: 'React.js 19 Concurrent Core', level: 94, icon: Cpu },
-      { name: 'Tailwind CSS Utility Engine', level: 96, icon: Sparkles },
-      { name: 'Next.js 14/15 App Router', level: 55, icon: Layers },
-      { name: 'Framer Motion & Spring Physics', level: 65, icon: Sparkles },
-      { name: 'Three.js / WebGL Shaders', level: 58, icon: Globe },
-    ],
-  },
-  {
-    id: 'backend_cloud',
-    name: 'Backend & Cloud',
-    items: [
-      { name: 'Django 5 REST Framework', level: 82, icon: Server },
-      { name: 'Python Enterprise Core', level: 80, icon: Terminal },
-      { name: 'Vite HMR & Bundler Tuning', level: 92, icon: Zap },
-      { name: 'Git Trunk & CI/CD Pipelines', level: 85, icon: Server },
-    ],
-  },
-];
-
-const DIRECTIVES = [
-  {
-    icon: Code,
-    title: 'Enterprise Architecture',
-    description:
-      'Designing component hierarchies that scale cleanly. Leveraging compound component patterns, custom hooks, and decoupled state machines.',
-    tag: 'ARCHITECTURE',
-    metric: 'Zero Layout Shift',
-  },
-  {
-    icon: Zap,
-    title: 'Kinetic 3D & Micro-Interactions',
-    description:
-      'Infusing interfaces with high-performance Three.js shaders and smooth CSS transforms that maintain solid 60 FPS frame rates.',
-    tag: 'INTERACTIONS',
-    metric: 'Sub-16ms Budget',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Resilient API Integration',
-    description:
-      'Implementing interceptor-backed Axios pipelines with automatic JWT cookie rotation, offline heuristic caching, and graceful failure boundaries.',
-    tag: 'INFRASTRUCTURE',
-    metric: 'HttpOnly Strict',
-  },
-];
+import aboutImg from '../../images/about.webp';
+import portfolioService, {
+  INITIAL_PROFILE_INFO,
+  INITIAL_SKILLS,
+} from '../../services/portfolio.service.js';
 
 export const AboutBento = () => {
   const [profile, setProfile] = useState(() =>
-    portfolioService.getProfileInfoSync ? portfolioService.getProfileInfoSync() : INITIAL_PROFILE_INFO
+    portfolioService.getProfileInfoSync
+      ? portfolioService.getProfileInfoSync()
+      : INITIAL_PROFILE_INFO
   );
-  const [activeConsoleTab, setActiveConsoleTab] = useState('skills'); // 'skills' | 'directives' | 'manifest'
-  const [skillCategoryTab, setSkillCategoryTab] = useState('core');
-  const [copiedManifest, setCopiedManifest] = useState(false);
+  const [skillsData, setSkillsData] = useState(INITIAL_SKILLS);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
+
     portfolioService.getProfileInfo().then((data) => {
-      if (isMounted && data) {
-        setProfile(data);
+      if (isMounted && data) setProfile(data);
+    });
+
+    portfolioService.getSkills().then((cats) => {
+      if (isMounted && cats && cats.length > 0) {
+        setSkillsData(cats);
       }
     });
 
@@ -115,7 +41,15 @@ export const AboutBento = () => {
         try {
           const parsed = JSON.parse(e.newValue);
           setProfile(parsed);
-        } catch {}
+        } catch { }
+      }
+      if (e.key === 'portfolio_skills_data') {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setSkillsData(parsed);
+          }
+        } catch { }
       }
     };
 
@@ -126,360 +60,326 @@ export const AboutBento = () => {
     };
   }, []);
 
-  const avatarSrc = profile?.avatar || profileImg;
+  // Ensure no parent wrapper (like App, main, or body) has overflow:hidden that breaks native GPU sticky
+  useEffect(() => {
+    let el = sectionRef.current?.parentElement;
+    while (el && el !== document.documentElement) {
+      const style = window.getComputedStyle(el);
+      if (style.overflowX === 'hidden' || style.overflow === 'hidden') {
+        el.style.overflowX = 'clip';
+      }
+      el = el.parentElement;
+    }
+  }, []);
 
-  const manifestJSON = JSON.stringify(
-    {
-      operator: profile?.name || 'Usama Ikram',
-      designation: profile?.title || 'Principal Frontend Architect & Web Engineer',
-      location: profile?.location || 'Lahore, Pakistan',
-      status: profile?.status || 'Online // Ready for Deployment',
-      architecture_standards: ['Strict DRY', 'Atomic Components', 'Sub-16ms Frame Budget'],
-      core_stack: ['React 19', 'Tailwind CSS', 'Django 5 DRF', 'Three.js', 'Vite'],
-      telemetry: {
-        latency: '12ms',
-        security: 'JWT HttpOnly Strict',
-        lighthouse: '99/100',
-      },
-    },
-    null,
-    2
-  );
+  const cutoutSrc = aboutImg || profile?.avatar || profileImg;
 
-  const handleCopyManifest = () => {
-    navigator.clipboard.writeText(manifestJSON);
-    setCopiedManifest(true);
-    setTimeout(() => setCopiedManifest(false), 2000);
+  const scrollToContact = () => {
+    const contact = document.getElementById('contact');
+    if (contact) {
+      contact.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
+  const scrollToProjects = () => {
+    const projects = document.getElementById('projects');
+    if (projects) {
+      projects.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const coreServices = [
+    {
+      icon: Box,
+      title: 'PROTOTYPING',
+      description:
+        'Rapid interactive prototyping and high-fidelity functional concepts that bring ideas to life before full-scale engineering.',
+    },
+    {
+      icon: Layers,
+      title: 'FRONTEND ARCHITECTURE',
+      description:
+        'Scalable component hierarchies, robust design systems, strict TypeScript interfaces, and zero layout shift web apps.',
+    },
+    {
+      icon: Zap,
+      title: 'DESIGN CONSULTING',
+      description:
+        'Expert guidance on modern UI/UX engineering, sub-16ms WebGL motion performance, and enterprise frontend scalability.',
+    },
+  ];
+
   return (
-    <section id="about" className="py-16 lg:py-20 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <SectionHeader
-          badge="ENGINEERING PROFILE"
-          title="Engineering &"
-          highlight="Architectural Matrix"
-          subtitle="A dedicated frontend engineer crafting scalable user interfaces with clean abstractions, micro-interactions, and robust state management."
+    <section
+      id="about"
+      ref={sectionRef}
+      className="relative w-full min-h-[260vh] bg-background text-foreground [overflow-x:clip]"
+    >
+      {/* ============================================================== */}
+      {/* 1. FOREGROUND STICKY LAYER — GPU LOCKED PORTRAIT (z-20)        */}
+      {/* Uses h-[100svh] so mobile address bars never cause a jump      */}
+      {/* ============================================================== */}
+      <div className="sticky top-0 left-0 h-[100svh] w-full flex items-end justify-center z-20 pointer-events-none overflow-hidden [transform:translate3d(0,0,0)] will-change-transform">
+        <img
+          src={cutoutSrc}
+          alt={profile?.name || 'Usama Ikram'}
+          className="h-[80svh] lg:h-[90svh] w-auto max-w-[90vw] object-contain object-bottom pointer-events-none select-none [mask-image:linear-gradient(to_bottom,black_88%,transparent_100%)]"
         />
+      </div>
 
-        {/* Master Command Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
-          
-          {/* Left Column: Operator Identity HUD Card (5 cols on lg) */}
-          <GlassCard
-            cyberCorners
-            glowColor="cyan"
-            className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden"
-          >
-            {/* Ambient subtle light glow without expensive blur filters */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle,rgba(34,211,238,0.1)_0%,transparent_70%)] pointer-events-none" />
+      {/* ============================================================== */}
+      {/* 2. BACKGROUND WATERMARK TYPOGRAPHY LAYER (z-0, clipped safely) */}
+      {/* ============================================================== */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0"
+      >
+        <div
+          className="absolute top-[28vh] left-1/2 -translate-x-1/2 text-[15vw] lg:text-[11vw] font-black uppercase tracking-tighter text-transparent opacity-10 whitespace-nowrap"
+          style={{ WebkitTextStroke: '2px currentColor', color: 'var(--primary, #e2f163)' }}
+        >
+          {profile?.name || 'USAMA IKRAM'}
+        </div>
 
-            <div>
-              {/* Header Telemetry Status Bar */}
-              <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/10 font-mono text-[11px]">
-                <div className="flex items-center gap-2 text-cyan-400">
-                  <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                  <span className="tracking-widest font-bold">PROFILE STATUS</span>
+        <div
+          className="absolute top-[115vh] left-1/2 -translate-x-1/2 text-[15vw] lg:text-[11vw] font-black uppercase tracking-tighter text-transparent opacity-15 whitespace-nowrap"
+          style={{ WebkitTextStroke: '2px currentColor' }}
+        >
+          WEB ARCHITECT
+        </div>
+
+        <div
+          className="absolute top-[195vh] left-1/2 -translate-x-1/2 text-[15vw] lg:text-[11vw] font-black uppercase tracking-tighter text-transparent opacity-10 whitespace-nowrap"
+          style={{ WebkitTextStroke: '2px currentColor', color: 'var(--primary, #e2f163)' }}
+        >
+          FULL STACK
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* 3. MIDGROUND SCROLLING CONTENT TRACK (z-10)                    */}
+      {/* Pulls up by -mt-[100svh] to align exactly with the portrait    */}
+      {/* ============================================================== */}
+      <div className="relative z-10 -mt-[100svh] max-w-7xl mx-auto px-6 md:px-12 pb-[20vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
+
+          {/* ========================================================== */}
+          {/* LEFT COLUMN: Headings, Bio, CTAs, Stats & Story Cards      */}
+          {/* ========================================================== */}
+          <div className="lg:col-span-4 flex flex-col gap-[20vh] lg:gap-[40vh] pt-[12vh] lg:pt-[18vh]">
+
+            {/* Block 1 (Initial Viewport): Master Headline, Bio, Buttons, Metrics */}
+            <div className="space-y-6 rounded-xl border border-border bg-background/80 backdrop-blur-md p-6 lg:border-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground tracking-tight leading-[1.08]">
+                {profile?.name || 'Usama Ikram'} is <br />
+                <span className="text-primary">Right Here!</span>
+              </h2>
+
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm font-normal">
+                {profile?.bio ||
+                  'With a seasoned eye for design and architecture, I transform complex ideas into elegant, high-performance web products that speak through their fluid functionality.'}
+              </p>
+
+              {/* Action Buttons Row */}
+              <div className="flex flex-wrap items-center gap-5 pt-2">
+                <button
+                  onClick={scrollToContact}
+                  className="px-6 py-3.5 rounded-md bg-primary text-primary-foreground font-extrabold text-xs tracking-wider uppercase hover:opacity-90 transition-opacity cursor-pointer shadow-lg pointer-events-auto"
+                >
+                  CHAT WITH ME
+                </button>
+
+                <button
+                  onClick={scrollToProjects}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground tracking-wider uppercase hover:text-primary transition-colors cursor-pointer pointer-events-auto"
+                >
+                  <span>START A PROJECT</span>
+                  <ArrowUpRight className="w-4 h-4 text-primary" />
+                </button>
+              </div>
+
+              {/* 2-Column Metrics Counter Row */}
+              <div className="grid grid-cols-2 gap-8 pt-6 border-t border-border">
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-primary font-sans">
+                    98%
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1 uppercase font-mono tracking-wider">
+                    Satisfaction Rate
+                  </div>
+                </div>
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-primary font-sans">
+                    100+
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1 uppercase font-mono tracking-wider">
+                    Projects Delivered
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Block 2 (Scroll Continuation): Engineering Philosophy */}
+            <div className="space-y-4 rounded-xl border border-border bg-background/80 backdrop-blur-md p-6 lg:border-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0">
+              <span className="text-xs font-mono text-primary uppercase tracking-widest font-semibold">
+                PHILOSOPHY // 01
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                Engineering with <br />
+                <span className="text-primary">Purpose & Rigor.</span>
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Every line of code is treated as a component of an overall system. I specialize in crafting decoupled UI hierarchies with strict type safety, zero layout shifts, and predictable state flow.
+              </p>
+              <div className="space-y-2 pt-2 text-xs font-mono text-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Decoupled Atomic Component Hierarchies</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                  <span className="text-emerald-400 font-semibold tracking-wider">
-                    {profile?.status ? 'AVAILABLE • ONLINE' : 'READY • ONLINE'}
-                  </span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Zero Layout Shift (CLS &lt; 0.01)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Sub-16ms GPU-Accelerated Frame Budgets</span>
                 </div>
               </div>
+            </div>
 
-              {/* Headshot with Cyber Reticle & Scanner */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
-                
-                <div className="relative group shrink-0">
-                  {/* Decorative Outer Cyber Brackets */}
-                  <div className="absolute -top-1.5 -left-1.5 w-4 h-4 border-t-2 border-l-2 border-cyan-400 z-20 pointer-events-none" />
-                  <div className="absolute -top-1.5 -right-1.5 w-4 h-4 border-t-2 border-r-2 border-cyan-400 z-20 pointer-events-none" />
-                  <div className="absolute -bottom-1.5 -left-1.5 w-4 h-4 border-b-2 border-l-2 border-cyan-400 z-20 pointer-events-none" />
-                  <div className="absolute -bottom-1.5 -right-1.5 w-4 h-4 border-b-2 border-r-2 border-cyan-400 z-20 pointer-events-none" />
-
-                  {/* Main Avatar Container */}
-                  <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_25px_rgba(34,211,238,0.25)] bg-slate-950 relative">
-                    <img
-                      src={avatarSrc}
-                      alt={profile?.name || 'Usama Ikram'}
-                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    />
-
-                    {/* Animated Scanning Laser Line */}
-                    <div
-                      className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-80 shadow-[0_0_12px_#22d3ee] pointer-events-none"
-                      style={{
-                        animation: 'float 3.5s ease-in-out infinite alternate',
-                      }}
-                    />
-
-                    {/* Holographic Grid Overlay */}
-                    <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(34,211,238,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(34,211,238,0.05)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
+            {/* Block 3 (Scroll Continuation): Performance Standards */}
+            <div className="space-y-4 rounded-xl border border-border bg-background/80 backdrop-blur-md p-6 lg:border-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0">
+              <span className="text-xs font-mono text-primary uppercase tracking-widest font-semibold">
+                STANDARDS // 02
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                Architectural <br />
+                <span className="text-primary">Performance First.</span>
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                By optimizing asset pipelines, eliminating render bottlenecks, and enforcing resilient API error boundaries, applications remain responsive and accessible under heavy production scale.
+              </p>
+              <div className="grid grid-cols-2 gap-3 pt-2 text-xs font-mono">
+                <div className="p-3 rounded-lg border border-border bg-card/50">
+                  <div className="text-primary font-bold">100% WCAG</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    Accessibility
                   </div>
-
-                  {/* Holographic Pill Indicator */}
-                  <span className="absolute -bottom-2 -right-2 px-2.5 py-0.5 rounded-full bg-cyan-950/90 border border-cyan-400 text-cyan-300 font-mono text-[9px] uppercase font-bold tracking-wider shadow-[0_0_10px_rgba(34,211,238,0.3)]">
-                    #0404
-                  </span>
                 </div>
-
-                {/* Identity telemetry */}
-                <div className="text-center sm:text-left space-y-1.5">
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-400/30 text-[10px] font-mono text-cyan-300">
-                    <ShieldCheck className="w-3 h-3 text-cyan-400" />
-                    <span>VERIFIED OPERATOR</span>
+                <div className="p-3 rounded-lg border border-border bg-card/50">
+                  <div className="text-primary font-bold">60 FPS</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    WebGL Budget
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    {profile?.name || 'Usama Ikram'}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-cyan-200/90 font-medium">
-                    {profile?.title || 'Principal Frontend Architect & Web Engineer'}
-                  </p>
-                  <p className="text-xs text-slate-400 font-mono flex items-center justify-center sm:justify-start gap-1">
-                    <Globe className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>{profile?.location || 'Lahore, Pakistan • GMT+5'}</span>
-                  </p>
                 </div>
               </div>
+            </div>
 
-              {/* Bio Statement */}
-              <div className="p-4 rounded-xl bg-slate-900/70 border border-white/10 mb-6">
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
-                  "{profile?.bio || 'Specialized in engineering sleek, modular frontend components with modern React, Tailwind CSS, and lightweight 3D graphics. Committed to continuous learning, zero technical debt, and pixel precision.'}"
+          </div>
+
+          {/* ========================================================== */}
+          {/* CENTER SPACER COLUMN: Keeps Lane Clear For Sticky Portrait */}
+          {/* ========================================================== */}
+          <div
+            className="hidden lg:block lg:col-span-4 h-full pointer-events-none"
+            aria-hidden="true"
+          />
+
+          {/* ========================================================== */}
+          {/* RIGHT COLUMN: Services Stack & Technical Domains           */}
+          {/* ========================================================== */}
+          <div className="lg:col-span-4 flex flex-col gap-[20vh] lg:gap-[40vh] pt-[4vh] lg:pt-[18vh]">
+
+            {/* Block 1 (Initial Viewport): 3 Services Stack */}
+            <div className="space-y-10 rounded-xl border border-border bg-background/80 backdrop-blur-md p-6 lg:border-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0">
+              {coreServices.map((service) => {
+                const IconComponent = service.icon;
+                return (
+                  <div key={service.title} className="flex items-start gap-4">
+                    <div className="w-11 h-11 shrink-0 flex items-center justify-center border border-border rounded-lg bg-card/50 text-primary">
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-black tracking-widest uppercase text-primary">
+                        {service.title}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mt-1 font-normal">
+                        {service.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Block 2 (Scroll Continuation): Core Tech Stack */}
+            <div className="space-y-4 rounded-xl border border-border bg-background/80 backdrop-blur-md p-6 lg:border-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0">
+              <span className="text-xs font-mono text-primary uppercase tracking-widest font-semibold">
+                STACK // 01
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                Core Technologies & <br />
+                <span className="text-primary">Modern Frameworks.</span>
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Extensive production experience delivering web apps across modern frontend and backend architectures:
+              </p>
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                {(skillsData && skillsData.length > 0
+                  ? skillsData.flatMap((cat) =>
+                    Array.isArray(cat.skills)
+                      ? cat.skills.map((s) => (typeof s === 'string' ? s : s.name))
+                      : []
+                  ).slice(0, 10)
+                  : [
+                    'React.js 19',
+                    'Next.js',
+                    'TypeScript',
+                    'Tailwind CSS',
+                    'Three.js / WebGL',
+                    'Framer Motion',
+                    'Django 5 DRF',
+                    'Python Core',
+                    'Vite Bundler',
+                    'Git & CI/CD',
+                  ]
+                ).map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1 rounded-md text-xs font-mono border border-border bg-card/60 text-foreground"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Block 3 (Scroll Continuation): Delivery & Workflow */}
+            <div className="space-y-4 rounded-xl border border-border bg-background/80 backdrop-blur-md p-6 lg:border-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0">
+              <span className="text-xs font-mono text-primary uppercase tracking-widest font-semibold">
+                WORKFLOW // 02
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                Seamless <br />
+                <span className="text-primary">Workflow & Delivery.</span>
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                From initial Figma wireframes to production deployment, every phase is managed with transparent communication, automated test suites, and strict milestone adherence.
+              </p>
+
+              <div className="p-4 rounded-lg border border-border bg-card/40 space-y-2">
+                <div className="text-xs font-mono text-primary font-bold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <span>Production-Ready SLA</span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Clean code reviews, modular pull requests, and verified cross-browser viewport compliance.
                 </p>
               </div>
             </div>
 
-            {/* Quick Architecture Specs */}
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-4 border-t border-white/10">
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="text-slate-400 text-[10px] uppercase">CORE ARCHITECTURE</div>
-                <div className="text-cyan-300 font-semibold text-xs mt-0.5">React 19 & Next.js</div>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="text-slate-400 text-[10px] uppercase">STYLING ENGINE</div>
-                <div className="text-cyan-300 font-semibold text-xs mt-0.5">Tailwind CSS & CSS3</div>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="text-slate-400 text-[10px] uppercase">BACKEND SERVICES</div>
-                <div className="text-cyan-300 font-semibold text-xs mt-0.5">Django 5 DRF & JWT</div>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="text-slate-400 text-[10px] uppercase">VISUALS & MOTION</div>
-                <div className="text-cyan-300 font-semibold text-xs mt-0.5">Three.js / WebGL</div>
-              </div>
-            </div>
-          </GlassCard>
-
-          {/* Right Column: Multi-View Command Console (7 cols on lg) */}
-          <GlassCard
-            cyberCorners
-            glowColor="blue"
-            className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden"
-          >
-            {/* Ambient blue light */}
-            <div className="absolute top-0 right-1/4 w-72 h-72 bg-[radial-gradient(circle,rgba(59,130,246,0.1)_0%,transparent_70%)] pointer-events-none" />
-
-            <div>
-              {/* Header with 3 Console Switcher Tabs */}
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Cpu className="w-5 h-5 text-cyan-400" />
-                    <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
-                      Architectural Command Deck
-                    </h3>
-                  </div>
-                  <p className="text-xs text-slate-400 font-mono mt-0.5">
-                    Technical telemetry, mission directives & machine manifest
-                  </p>
-                </div>
-
-                {/* 3 Console View Tabs */}
-                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-white/10">
-                  <button
-                    onClick={() => setActiveConsoleTab('skills')}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                      activeConsoleTab === 'skills'
-                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_10px_rgba(34,211,238,0.2)]'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Skills Matrix
-                  </button>
-                  <button
-                    onClick={() => setActiveConsoleTab('directives')}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                      activeConsoleTab === 'directives'
-                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_10px_rgba(34,211,238,0.2)]'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    Directives
-                  </button>
-                  <button
-                    onClick={() => setActiveConsoleTab('manifest')}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer flex items-center gap-1 ${
-                      activeConsoleTab === 'manifest'
-                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_10px_rgba(34,211,238,0.2)]'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    <Terminal className="w-3 h-3" />
-                    Manifest
-                  </button>
-                </div>
-              </div>
-
-              {/* VIEW 1: Skills Proficiency Matrix */}
-              {activeConsoleTab === 'skills' && (
-                <div>
-                  {/* Category Filter Pills */}
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {SKILL_CATEGORIES.map((cat) => (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSkillCategoryTab(cat.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all cursor-pointer ${
-                          skillCategoryTab === cat.id
-                            ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
-                            : 'bg-white/[0.03] text-slate-400 border border-white/5 hover:text-white hover:border-white/20'
-                        }`}
-                      >
-                        {cat.name}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* High-Performance Progress Bars */}
-                  <div className="space-y-4">
-                    {SKILL_CATEGORIES.find((c) => c.id === skillCategoryTab)?.items.map((skill) => {
-                      const Icon = skill.icon;
-                      return (
-                        <div key={skill.name} className="space-y-1.5 group">
-                          <div className="flex items-center justify-between text-xs font-mono">
-                            <div className="flex items-center gap-2 text-slate-200 group-hover:text-cyan-300 transition-colors">
-                              <Icon className="w-4 h-4 text-cyan-400" />
-                              <span className="font-medium">{skill.name}</span>
-                            </div>
-                            <span className="text-cyan-400 font-bold">{skill.level}%</span>
-                          </div>
-
-                          <div className="h-2 rounded-full bg-slate-900 overflow-hidden border border-white/10 p-[1px]">
-                            <div
-                              className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 transition-all duration-500 ease-out shadow-[0_0_10px_rgba(34,211,238,0.4)]"
-                              style={{ width: `${skill.level}%` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* VIEW 2: Architectural Directives */}
-              {activeConsoleTab === 'directives' && (
-                <div className="space-y-3.5">
-                  {DIRECTIVES.map((directive) => {
-                    const Icon = directive.icon;
-                    return (
-                      <div
-                        key={directive.title}
-                        className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-cyan-400/40 transition-all"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <h4 className="text-sm font-bold text-white tracking-wide">
-                              {directive.title}
-                            </h4>
-                          </div>
-                          <span className="text-[10px] font-mono text-cyan-300 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-400/30">
-                            {directive.metric}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-300/80 leading-relaxed pl-10 font-light">
-                          {directive.description}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* VIEW 3: Machine-Readable Manifest Terminal */}
-              {activeConsoleTab === 'manifest' && (
-                <div className="rounded-xl bg-slate-950/90 border border-cyan-500/20 p-4 font-mono text-xs relative group">
-                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[10px] text-slate-400">
-                    <span className="text-cyan-400 flex items-center gap-1.5">
-                      <Terminal className="w-3.5 h-3.5" />
-                      operator_manifest.json
-                    </span>
-                    <button
-                      onClick={handleCopyManifest}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-slate-300 transition-colors cursor-pointer"
-                    >
-                      {copiedManifest ? (
-                        <>
-                          <Check className="w-3 h-3 text-emerald-400" />
-                          <span className="text-emerald-400">COPIED</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3 text-cyan-400" />
-                          <span>COPY CONFIG</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <pre className="text-cyan-200 text-[11px] leading-relaxed overflow-x-auto max-h-56 scrollbar-thin">
-                    {manifestJSON}
-                  </pre>
-                </div>
-              )}
-            </div>
-
-            {/* Matrix Quick Badges */}
-            <div className="flex flex-wrap gap-2 pt-6 mt-6 border-t border-white/10">
-              <TechBadge name="React 19" variant="glow" />
-              <TechBadge name="Tailwind CSS" variant="glow" />
-              <TechBadge name="Next.js" variant="default" />
-              <TechBadge name="Django 5 DRF" variant="glow" />
-              <TechBadge name="Three.js / WebGL" variant="default" />
-              <TechBadge name="JWT Auth" variant="default" />
-              <TechBadge name="Vite Bundler" variant="default" />
-            </div>
-          </GlassCard>
-
-          {/* Full-Width Telemetry KPI Dock (12 cols) */}
-          <div className="lg:col-span-12 grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {TELEMETRY_STATS.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <GlassCard
-                  key={stat.label}
-                  glowColor="cyan"
-                  className="p-5 text-center flex flex-col items-center justify-center hover:scale-[1.01] transition-transform duration-200"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 mb-2.5 shadow-[0_0_15px_rgba(34,211,238,0.15)]">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white font-mono mb-1 tracking-tight">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs font-semibold text-slate-200 mb-0.5">{stat.label}</div>
-                  <div className="text-[10px] text-slate-400 font-mono">{stat.sub}</div>
-                </GlassCard>
-              );
-            })}
           </div>
 
         </div>

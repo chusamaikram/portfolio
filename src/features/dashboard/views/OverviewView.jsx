@@ -222,10 +222,10 @@ export const OverviewView = ({
           </div>
 
           <button
-            onClick={() => onNavigate('telemetry')}
-            className="w-full text-center py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-xs font-mono transition-colors"
+            onClick={() => onNavigate('settings')}
+            className="w-full text-center py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-xs font-mono transition-colors cursor-pointer"
           >
-            Open Live Telemetry Diagnostics →
+            Open Settings & Profile →
           </button>
         </GlassCard>
 

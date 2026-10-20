@@ -125,6 +125,7 @@ class ProfileInfo(models.Model):
     title = models.CharField(max_length=300, default='Principal Frontend Architect & Web Engineer')
     bio = models.TextField(default='Specialized in engineering sleek, modular frontend components with modern React, Tailwind CSS, and lightweight 3D graphics.')
     avatar = models.TextField(blank=True, default='', help_text="Base64 encoded string or image URL for profile headshot")
+    about_image = models.TextField(blank=True, default='', help_text="Base64 encoded string or image URL for About section sticky cutout portrait")
     location = models.CharField(max_length=200, default='Lahore, Pakistan')
     email = models.EmailField(default='usama.code404@gmail.com')
     phone = models.CharField(max_length=100, default='+92 309 8525906')

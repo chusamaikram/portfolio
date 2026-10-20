@@ -203,6 +203,7 @@ export const INITIAL_PROFILE_INFO = {
   title: 'Principal Frontend Architect & Web Engineer',
   bio: 'Specialized in engineering sleek, modular frontend components with modern React, Tailwind CSS, and lightweight 3D graphics.',
   avatar: '',
+  about_image: '',
   location: 'Lahore, Pakistan',
   email: 'usama.code404@gmail.com',
   phone: '+92 309 8525906',
@@ -615,10 +616,16 @@ export const portfolioService = {
       const res = await axiosInstance.put(ENDPOINTS.PORTFOLIO.PROFILE, info);
       if (res.data) {
         setLocalData(LOCAL_STORAGE_KEYS.PROFILE, res.data);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('portfolio_profile_updated', { detail: res.data }));
+        }
         return res.data;
       }
     } catch (e) {
       // Offline fallback
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('portfolio_profile_updated', { detail: info }));
     }
     return info;
   },

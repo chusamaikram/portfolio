@@ -24,6 +24,7 @@ import NeonButton from '../../../components/ui/NeonButton.jsx';
 import { API_BASE_URL, ENDPOINTS } from '../../../api/endpoints.js';
 import axiosInstance from '../../../api/axiosInstance.js';
 import profileFallbackImg from '../../../images/profile.webp';
+import aboutFallbackImg from '../../../images/about.webp';
 
 export const SettingsView = ({
   profileInfo,
@@ -37,6 +38,7 @@ export const SettingsView = ({
   const [pingResult, setPingResult] = useState(null);
   const [isPinging, setIsPinging] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isUploadingAboutImg, setIsUploadingAboutImg] = useState(false);
 
   useEffect(() => {
     if (profileInfo && Object.keys(profileInfo).length > 0) {
@@ -80,6 +82,44 @@ export const SettingsView = ({
   const handleResetAvatar = () => {
     setProfileForm((prev) => ({ ...prev, avatar: '' }));
     toast.info('Reverted to default Usama Ikram profile image. Click Save to persist.');
+  };
+
+  const handleAboutImageFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Invalid file type', {
+        description: 'Please select a valid image file (PNG, WebP, JPG).',
+      });
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error('File too large', {
+        description: 'Image file size must be under 8MB.',
+      });
+      return;
+    }
+
+    setIsUploadingAboutImg(true);
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const dataUrl = loadEvent.target.result;
+      setProfileForm((prev) => ({ ...prev, about_image: dataUrl }));
+      setIsUploadingAboutImg(false);
+      toast.success('About section cutout portrait loaded! Click Save to apply.');
+    };
+    reader.onerror = () => {
+      setIsUploadingAboutImg(false);
+      toast.error('Failed reading image file');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleResetAboutImage = () => {
+    setProfileForm((prev) => ({ ...prev, about_image: '' }));
+    toast.info('Reverted to default About section cutout portrait. Click Save to persist.');
   };
 
   const validateField = (field, val) => {
@@ -224,10 +264,10 @@ export const SettingsView = ({
                 <div>
                   <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
                     <Camera className="w-4 h-4 text-cyan-400" />
-                    OPERATOR HEADSHOT // ABOUT SECTION IMAGE
+                    OPERATOR HEADSHOT // GENERAL AVATAR
                   </h3>
                   <p className="text-[11px] text-slate-400 font-sans mt-0.5">
-                    This image is dynamically synced to your public portfolio's futuristic About section. Upload a headshot file or enter an image URL.
+                    This avatar image is used for site navigation, metadata, and general profile identification. Upload a file or paste a URL.
                   </p>
                 </div>
 
@@ -277,6 +317,93 @@ export const SettingsView = ({
                     >
                       <Trash2 className="w-3 h-3 text-rose-400" />
                       Clear Custom Avatar
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dedicated About Section Cutout Portrait Management */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-emerald-500/20 mb-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              {/* Live Preview Box */}
+              <div className="relative group shrink-0">
+                <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-2xl overflow-hidden border-2 border-emerald-400/50 shadow-[0_0_20px_rgba(52,211,153,0.2)] bg-slate-950 flex items-end justify-center relative">
+                  <img
+                    src={profileForm.about_image || profileForm.avatar || aboutFallbackImg}
+                    alt={profileForm.name || 'About Cutout Portrait'}
+                    className="w-full h-full object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {isUploadingAboutImg && (
+                    <div className="absolute inset-0 bg-slate-950/80 flex items-center justify-center">
+                      <RefreshCw className="w-6 h-6 text-emerald-400 animate-spin" />
+                    </div>
+                  )}
+                </div>
+                <span className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400 text-emerald-300 font-mono text-[9px] uppercase font-bold tracking-wider">
+                  {profileForm.about_image ? 'CUSTOM' : 'DEFAULT'}
+                </span>
+              </div>
+
+              {/* Upload & Configuration controls */}
+              <div className="flex-1 space-y-3 w-full">
+                <div>
+                  <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-emerald-400" />
+                    ABOUT SECTION STICKY CUTOUT PORTRAIT
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-sans mt-0.5">
+                    This transparent cutout portrait stays pinned in the center of the About section while side columns scroll. Upload a transparent cutout PNG or WebP, or enter an image URL.
+                  </p>
+                </div>
+
+                {/* Upload or URL fields */}
+                <div className="grid sm:grid-cols-2 gap-3 pt-1">
+                  <div>
+                    <label className="text-slate-300 block mb-1 text-[11px]">UPLOAD CUTOUT (PNG, WEBP, JPG)</label>
+                    <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-950 border border-white/15 hover:border-emerald-400 text-slate-200 text-xs cursor-pointer transition-colors">
+                      <Upload className="w-4 h-4 text-emerald-400" />
+                      <span>{isUploadingAboutImg ? 'Reading...' : 'Choose Cutout File...'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAboutImageFile}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="text-slate-300 block mb-1 text-[11px]">OR PASTE CUTOUT IMAGE URL</label>
+                    <input
+                      type="url"
+                      placeholder="https://.../portrait-cutout.png"
+                      value={profileForm.about_image || ''}
+                      onChange={(e) => handleChange('about_image', e.target.value)}
+                      className="w-full bg-slate-950 border border-white/15 focus:border-emerald-400 rounded-xl px-3 py-2 text-white font-sans text-xs focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick actions: Reset to default or clear */}
+                <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={handleResetAboutImage}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors"
+                  >
+                    <RefreshCw className="w-3 h-3 text-emerald-400" />
+                    Reset to Default About Image
+                  </button>
+                  {profileForm.about_image && (
+                    <button
+                      type="button"
+                      onClick={() => handleChange('about_image', '')}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition-colors"
+                    >
+                      <Trash2 className="w-3 h-3 text-rose-400" />
+                      Clear Custom Cutout
                     </button>
                   )}
                 </div>

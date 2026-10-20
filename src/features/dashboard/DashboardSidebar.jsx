@@ -7,17 +7,14 @@ import {
   MessageSquareQuote,
   Mail,
   Briefcase,
-  Activity,
   Sliders,
   ExternalLink,
   LogOut,
   Code2,
   ChevronLeft,
   ChevronRight,
-  ShieldCheck,
   Sparkles,
 } from 'lucide-react';
-import profileImg from '../../images/profile.webp';
 
 export const NAV_ITEMS = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -27,7 +24,6 @@ export const NAV_ITEMS = [
   { id: 'messages', label: 'Inbound Messages', icon: Mail, badgeKey: 'unreadMessages' },
   { id: 'experience', label: 'Experience', icon: Briefcase, badgeKey: 'experience' },
   { id: 'ai_settings', label: 'AI Integrations', icon: Sparkles },
-  { id: 'telemetry', label: 'System Telemetry', icon: Activity },
   { id: 'settings', label: 'Settings & Profile', icon: Sliders },
 ];
 
@@ -91,38 +87,6 @@ export const DashboardSidebar = ({
               <ChevronLeft className="w-4 h-4" />
             )}
           </button>
-        </div>
-
-        {/* User Card Pill */}
-        <div className="p-3 border-b border-white/5">
-          <div
-            className={`flex items-center gap-3 p-2 rounded-xl bg-white/[0.03] border border-white/5 ${
-              isCollapsed ? 'justify-center' : ''
-            }`}
-          >
-            <div className="relative shrink-0">
-              <img
-                src={profileImg}
-                alt="Usama Ikram"
-                className="w-9 h-9 rounded-lg object-cover object-top border border-cyan-400/40"
-              />
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-slate-950 animate-pulse" />
-            </div>
-
-            {!isCollapsed && (
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-bold text-white truncate">
-                    {user?.name || 'Usama Ikram'}
-                  </span>
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                </div>
-                <div className="text-[10px] font-mono text-cyan-400/80 truncate">
-                  Principal Admin
-                </div>
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Navigation Items List */}

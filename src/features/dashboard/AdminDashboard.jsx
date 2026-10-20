@@ -140,7 +140,6 @@ export const AdminDashboard = () => {
     messages: 'Inbound Inquiries',
     experience: 'Career Milestones',
     ai_settings: 'AI Integrations & Failover Settings',
-    telemetry: 'System Telemetry',
     settings: 'Settings & Profile',
   }[activeTab] || 'Mission Control';
 
@@ -599,15 +598,6 @@ export const AdminDashboard = () => {
 
               {activeTab === 'ai_settings' && (
                 <AISettingsView />
-              )}
-
-              {activeTab === 'telemetry' && (
-                <SettingsView
-                  profileInfo={profileInfo}
-                  onUpdateProfile={handleUpdateProfile}
-                  onResetAllData={handleResetAllData}
-                  getAllExportData={getAllExportData}
-                />
               )}
 
               {activeTab === 'settings' && (
