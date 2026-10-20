@@ -186,69 +186,71 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-28 relative">
+    <section id="contact" className="py-16 lg:py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <SectionHeader
-          badge="SECURE COMMUNICATIONS CHANNEL"
+          badge="DIRECT CONTACT"
           title="Initialize"
           highlight="Collaboration"
           subtitle="Looking for a high-performance frontend engineer for your project, contract, or team? Transmit your query below."
         />
 
-        <div className="grid lg:grid-cols-12 gap-8 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* Left: Contact Info & Status Cards */}
-          <div className="lg:col-span-5 space-y-6">
-            
-            {/* Status card */}
-            <GlassCard cyberCorners glowColor="emerald" className="p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-                </span>
-                <span className="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                  DISPATCH CHANNEL OPEN
-                </span>
-              </div>
-              <p className="text-sm text-slate-300 font-light leading-relaxed">
-                Currently available for Frontend Web Development roles, UI/UX replicas, and enterprise React contracts.
-              </p>
-            </GlassCard>
+          {/* Left: Contact Info & Status Card (Equal Height) */}
+          <div className="lg:col-span-5 flex flex-col">
+            <GlassCard cyberCorners glowColor="cyan" className="p-6 sm:p-8 flex-1 flex flex-col justify-between">
+              <div>
+                {/* Header Status Bar matching right card's header */}
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                    </span>
+                    <span className="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                      OPEN TO INQUIRIES
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs text-cyan-400 px-2.5 py-1 rounded bg-cyan-500/10 border border-cyan-400/30">
+                    ONLINE GMT+5
+                  </div>
+                </div>
 
-            {/* Direct Channels */}
-            <GlassCard cyberCorners glowColor="cyan" className="p-6 space-y-4">
-              <h3 className="text-base font-bold text-white font-mono uppercase tracking-wider mb-2">
-                Direct Telemetry
-              </h3>
+                <h3 className="text-xl font-bold text-white mb-2">Direct Telemetry</h3>
+                <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed mb-6">
+                  Available for Frontend Engineering roles, UI/UX replicas, and enterprise React contracts.
+                </p>
 
-              <div className="space-y-3">
-                {CONTACT_INFO.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      className="flex items-center gap-4 p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-cyan-400/30 transition-all group"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="text-[11px] font-mono text-slate-400">{item.label}</div>
-                        <div className="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors">
-                          {item.value}
+                {/* Direct Channel Links */}
+                <div className="space-y-3.5">
+                  {CONTACT_INFO.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        className="flex items-center gap-4 p-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-cyan-400/30 transition-all group"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                          <Icon className="w-5 h-5" />
                         </div>
-                      </div>
-                    </a>
-                  );
-                })}
+                        <div>
+                          <div className="text-[11px] font-mono text-slate-400">{item.label}</div>
+                          <div className="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors">
+                            {item.value}
+                          </div>
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Social Channels */}
-              <div className="pt-4 border-t border-white/10">
+              {/* Social Channels at Bottom matching Form button baseline */}
+              <div className="pt-6 border-t border-white/10 mt-6">
                 <div className="text-xs font-mono text-slate-400 mb-3">PUBLIC NETWORKS</div>
                 <div className="flex gap-2">
                   {SOCIAL_LINKS.map((s) => {
@@ -259,7 +261,7 @@ export const ContactSection = () => {
                         href={s.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-900 border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-cyan-300 text-xs font-mono transition-all"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-cyan-300 text-xs font-mono transition-all"
                       >
                         <Icon className="w-4 h-4" />
                         <span>{s.label}</span>
@@ -269,25 +271,24 @@ export const ContactSection = () => {
                 </div>
               </div>
             </GlassCard>
-
           </div>
 
-          {/* Right: Interactive Contact Form with Real-time Validation */}
-          <div className="lg:col-span-7">
-            <GlassCard cyberCorners glowColor="cyan" className="p-6 sm:p-8">
+          {/* Right: Interactive Contact Form with Real-time Validation (Equal Height) */}
+          <div className="lg:col-span-7 flex flex-col">
+            <GlassCard cyberCorners glowColor="cyan" className="p-6 sm:p-8 flex-1 flex flex-col justify-between">
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-                <div>
-                  <h3 className="text-xl font-bold text-white">Direct Message Transmission</h3>
-                  <p className="text-xs text-slate-400 font-mono">
-                    Instant sync to Usama’s Admin Dashboard & Email
-                  </p>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Direct Message Transmission</h3>
+                    <p className="text-xs text-slate-400 font-mono">
+                      Instant sync to Usama’s Admin Dashboard & Email
+                    </p>
+                  </div>
+                  <div className="font-mono text-xs text-cyan-400 px-2.5 py-1 rounded bg-cyan-500/10 border border-cyan-400/30">
+                    ENCRYPTED TLS
+                  </div>
                 </div>
-                <div className="font-mono text-xs text-cyan-400 px-2.5 py-1 rounded bg-cyan-500/10 border border-cyan-400/30">
-                  ENCRYPTED TLS
-                </div>
-              </div>
 
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+              <form onSubmit={handleSubmit} noValidate className="flex-1 flex flex-col justify-between space-y-4 pt-2">
                 <div className="grid sm:grid-cols-2 gap-4">
                   {/* Name field */}
                   <div className="space-y-1.5">

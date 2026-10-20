@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Github, Sparkles, Terminal, Code2, ArrowUpRight, Layers } from 'lucide-react';
+import { ExternalLink, Github, Sparkles, Bot, Terminal, Code2, ArrowUpRight, Layers } from 'lucide-react';
 import GlassCard from '../../components/ui/GlassCard.jsx';
 import SectionHeader from '../../components/ui/SectionHeader.jsx';
 import TechBadge from '../../components/ui/TechBadge.jsx';
@@ -107,14 +107,14 @@ const ProjectCard = ({ project, onAskAi }) => {
             </a>
           )}
 
-          {/* Ask AI Trigger Button */}
+          {/* Ask Cypher Trigger Button */}
           <button
             onClick={() => onAskAi(project.title)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:border-purple-400 text-xs font-mono transition-all hover:scale-105 active:scale-95 cursor-pointer ml-auto"
-            title="Ask Usama-AI to explain this project's architecture"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 hover:border-cyan-400 text-xs font-mono transition-all hover:scale-105 active:scale-95 cursor-pointer ml-auto"
+            title="Ask Cypher to explain this project's architecture"
           >
-            <Sparkles className="w-3 h-3 text-purple-400" />
-            <span>Ask AI</span>
+            <Bot className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Ask Cypher</span>
           </button>
         </div>
       </GlassCard>
@@ -166,12 +166,12 @@ export const ProjectsGrid = ({ onOpenAiChat }) => {
   });
 
   return (
-    <section id="projects" className="py-20 md:py-28 relative">
+    <section id="projects" className="py-16 lg:py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <SectionHeader
-          badge="PRODUCTION CATALOG // PORTFOLIO"
+          badge="FEATURED WORK"
           title="Featured"
           highlight="Engineering Work"
           subtitle="A curated showcase of responsive platforms, dashboard analytics, and UI/UX replicas built to high architectural standards."

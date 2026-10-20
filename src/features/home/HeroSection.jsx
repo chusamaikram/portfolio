@@ -1,11 +1,8 @@
-import React, { Suspense } from 'react';
-import { Download, Sparkles, Terminal, ArrowRight, Github, Linkedin, ExternalLink } from 'lucide-react';
-import HologramLoader from '../../components/three/HologramLoader.jsx';
+import React from 'react';
+import { Download, ArrowRight, Github, Linkedin } from 'lucide-react';
 import NeonButton from '../../components/ui/NeonButton.jsx';
-import GlassCard from '../../components/ui/GlassCard.jsx';
 
-// Lazy-load the heavy 3D WebGL bundle to ensure initial paint is instant
-const HeroHologram = React.lazy(() => import('../../components/three/HeroHologram.jsx'));
+import HeroVisualContainer from '../../components/three/HeroVisualContainer.jsx';
 
 export const HeroSection = ({ onOpenAiChat }) => {
   const scrollTo = (id) => {
@@ -14,7 +11,7 @@ export const HeroSection = ({ onOpenAiChat }) => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen pt-28 pb-16 md:py-32 flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-screen pt-28 pb-16 lg:pt-32 lg:pb-20 flex items-center justify-center overflow-hidden">
       {/* Background ambient lighting - pre-computed radial gradients without blur filters */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(34,211,238,0.12)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute top-1/3 right-10 w-[450px] h-[450px] bg-[radial-gradient(circle,rgba(59,130,246,0.1)_0%,transparent_70%)] pointer-events-none" />
@@ -23,15 +20,15 @@ export const HeroSection = ({ onOpenAiChat }) => {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           
           {/* Left Column: Heading, Badges, CTAs */}
-          <div className="lg:col-span-7 text-center lg:text-left space-y-6">
+          <div className="lg:col-span-6 text-center lg:text-left space-y-6">
             
             {/* System Status Pill */}
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-400/40 text-cyan-300 text-xs font-mono tracking-wider uppercase shadow-[0_0_20px_rgba(34,211,238,0.15)]">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span>USAMA-OS v3.0 // ARCHITECTURAL KERNEL READY</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Available for Architecture & Engineering Opportunities</span>
             </div>
 
             {/* Main Headline */}
@@ -65,7 +62,7 @@ export const HeroSection = ({ onOpenAiChat }) => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
               <NeonButton
                 size="lg"
                 variant="primary"
@@ -76,25 +73,16 @@ export const HeroSection = ({ onOpenAiChat }) => {
                 Explore Projects
               </NeonButton>
 
-              <NeonButton
-                size="lg"
-                variant="secondary"
-                onClick={() => {
-                  if (onOpenAiChat) onOpenAiChat();
-                }}
-                icon={Terminal}
-              >
-                Launch AI Assistant
-              </NeonButton>
-
               <a
                 href="/resume.pdf"
+                download="Usama_Ikram_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900/70 hover:bg-slate-800 text-slate-200 border border-white/10 hover:border-cyan-400/40 text-sm font-medium transition-all"
+                className="relative inline-flex items-center justify-center gap-2.5 px-6 py-3 text-base rounded-xl font-semibold bg-slate-900/80 hover:bg-slate-800/90 text-white border border-cyan-400/40 hover:border-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.15)] hover:shadow-[0_0_30px_rgba(34,211,238,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer group"
+                title="Download Usama's Resume (PDF)"
               >
-                <Download className="w-4 h-4 text-cyan-400" />
-                <span>Resume.pdf</span>
+                <Download className="w-4 h-4 text-cyan-400 group-hover:translate-y-0.5 transition-transform" />
+                <span>Download Resume</span>
               </a>
             </div>
 
@@ -128,13 +116,9 @@ export const HeroSection = ({ onOpenAiChat }) => {
 
           </div>
 
-          {/* Right Column: 3D Holographic Model Canvas */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
-            <div className="w-full max-w-[480px]">
-              <Suspense fallback={<HologramLoader />}>
-                <HeroHologram />
-              </Suspense>
-            </div>
+          {/* Right Column: Dynamic 3D Visual Showcase (Laptop, Neural Core, or Quantum Sphere) */}
+          <div className="lg:col-span-6 relative w-full flex items-center justify-center">
+            <HeroVisualContainer />
           </div>
 
         </div>

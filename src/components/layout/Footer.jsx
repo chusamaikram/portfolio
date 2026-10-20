@@ -41,31 +41,31 @@ export const Footer = () => {
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white">
               Navigation
             </h4>
-            <ul className="space-y-2 text-xs font-mono text-slate-400">
+            <ul className="space-y-2.5 text-xs font-mono text-slate-400">
               <li>
                 <a href="#home" className="hover:text-cyan-300 transition-colors">
-                  01 // Overview
+                  Home
                 </a>
               </li>
               <li>
                 <a href="#about" className="hover:text-cyan-300 transition-colors">
-                  02 // Bento & Skills
+                  About & Skills
                 </a>
               </li>
               <li>
                 <a href="#projects" className="hover:text-cyan-300 transition-colors">
-                  03 // Projects Catalog
+                  Projects
+                </a>
+              </li>
+              <li>
+                <a href="#testimonials" className="hover:text-cyan-300 transition-colors">
+                  Testimonials
                 </a>
               </li>
               <li>
                 <a href="#contact" className="hover:text-cyan-300 transition-colors">
-                  04 // Secure Contact
+                  Contact
                 </a>
-              </li>
-              <li>
-                <Link to="/login" className="hover:text-cyan-300 transition-colors">
-                  05 // Admin Gateway
-                </Link>
               </li>
             </ul>
           </div>

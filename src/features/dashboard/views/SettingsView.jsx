@@ -410,6 +410,50 @@ export const SettingsView = ({
             </div>
           </div>
 
+          {/* Active 3D Hero Visual Mode */}
+          <div className="pt-2 pb-2">
+            <label className="text-slate-300 block mb-2 font-mono text-xs uppercase tracking-wider">
+              ACTIVE 3D HERO SHOWCASE MODE
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                {
+                  id: 'laptop',
+                  title: '3D Tech Laptop',
+                  desc: 'Assembles on load/scroll, stationary & calm when assembled, ambient waves only',
+                },
+                {
+                  id: 'brain',
+                  title: 'AI Neural Core',
+                  desc: 'Organic anatomical brain lobes, cursor-reactive parallax tilt & synaptic glow',
+                },
+                {
+                  id: 'globe',
+                  title: '3D Holographic Globe',
+                  desc: 'Revolving 360° sphere with 6 programming language symbol nodes in authentic brand colors',
+                },
+              ].map((opt) => (
+                <div
+                  key={opt.id}
+                  onClick={() => handleChange('hero_visual_type', opt.id)}
+                  className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+                    (profileForm.hero_visual_type || 'laptop') === opt.id
+                      ? 'bg-cyan-500/15 border-cyan-400 text-white shadow-[0_0_15px_rgba(34,211,238,0.2)]'
+                      : 'bg-slate-900 border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-xs font-mono">{opt.title}</span>
+                    {(profileForm.hero_visual_type || 'laptop') === opt.id && (
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-normal">{opt.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex justify-end pt-4 border-t border-white/10">
             <NeonButton type="submit" size="sm" variant="primary" icon={Save}>
               Save Profile Specifications

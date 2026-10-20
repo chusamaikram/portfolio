@@ -32,12 +32,12 @@ export const TestimonialsSection = () => {
   if (!isLoading && testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="py-20 md:py-28 relative">
+    <section id="testimonials" className="py-16 lg:py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <SectionHeader
-          badge="VERIFIED ENDORSEMENTS // CLIENT REVIEWS"
+          badge="CLIENT REVIEWS & ENDORSEMENTS"
           title="What Peers & Leaders"
           highlight="Say About Usama"
           subtitle="Testimonials from engineering leaders, tech founders, and designers who have collaborated on frontend architectures and UI replicas."

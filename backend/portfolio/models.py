@@ -131,6 +131,16 @@ class ProfileInfo(models.Model):
     github = models.URLField(default='https://github.com/chusamaikram')
     linkedin = models.URLField(default='https://linkedin.com/in/usama-ikram-252052182')
     status = models.CharField(max_length=200, default='Available for Freelance & Full-time Roles')
+    hero_visual_type = models.CharField(
+        max_length=50,
+        default='laptop',
+        choices=[
+            ('laptop', '3D Tech Laptop'),
+            ('brain', '3D AI Neural Brain'),
+            ('globe', '3D Holographic Tech Globe'),
+        ],
+        help_text="Active 3D visual showcase mode in Hero Section",
+    )
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

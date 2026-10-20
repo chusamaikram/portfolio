@@ -153,12 +153,12 @@ export const AboutBento = () => {
   };
 
   return (
-    <section id="about" className="py-20 md:py-28 relative">
+    <section id="about" className="py-16 lg:py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <SectionHeader
-          badge="CYBER TELEMETRY // OPERATOR PROTOCOL"
+          badge="ENGINEERING PROFILE"
           title="Engineering &"
           highlight="Architectural Matrix"
           subtitle="A dedicated frontend engineer crafting scalable user interfaces with clean abstractions, micro-interactions, and robust state management."
@@ -181,12 +181,12 @@ export const AboutBento = () => {
               <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/10 font-mono text-[11px]">
                 <div className="flex items-center gap-2 text-cyan-400">
                   <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                  <span className="tracking-widest font-bold">OPERATOR HUD</span>
+                  <span className="tracking-widest font-bold">PROFILE STATUS</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                   <span className="text-emerald-400 font-semibold tracking-wider">
-                    {profile?.status ? 'ACTIVE // ONLINE' : 'READY // ONLINE'}
+                    {profile?.status ? 'AVAILABLE • ONLINE' : 'READY • ONLINE'}
                   </span>
                 </div>
               </div>

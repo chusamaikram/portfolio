@@ -2,7 +2,7 @@ import React from 'react';
 
 export const HologramLoader = () => {
   return (
-    <div className="w-full h-[380px] sm:h-[440px] md:h-[500px] flex flex-col items-center justify-center relative">
+    <div className="w-full h-[480px] sm:h-[560px] md:h-[620px] lg:h-[660px] flex flex-col items-center justify-center relative">
       {/* Outer pulsing ring */}
       <div className="relative w-44 h-44 flex items-center justify-center">
         <div className="absolute inset-0 rounded-full border border-cyan-400/30 animate-ping opacity-30" />
@@ -16,7 +16,7 @@ export const HologramLoader = () => {
 
       <div className="mt-6 flex flex-col items-center gap-1 font-mono text-xs">
         <span className="text-cyan-400 tracking-widest uppercase animate-pulse">
-          // SYNTHESIZING 3D CORE...
+          ASSEMBLING 3D WORKSTATION...
         </span>
         <span className="text-slate-500 text-[10px]">
           INITIALIZING WEBGL 60FPS SHADERS

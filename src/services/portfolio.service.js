@@ -209,6 +209,7 @@ export const INITIAL_PROFILE_INFO = {
   github: 'https://github.com/chusamaikram',
   linkedin: 'https://linkedin.com/in/usama-ikram-252052182',
   status: 'Available for Freelance & Full-time Roles',
+  hero_visual_type: 'laptop', // 'laptop' | 'brain' | 'globe'
 };
 
 const LOCAL_STORAGE_KEYS = {

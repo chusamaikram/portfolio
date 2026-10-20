@@ -39,7 +39,7 @@ export const TechMarqueeSlider = () => {
   const row2Items = [...ROW_2_TECHS, ...ROW_2_TECHS];
 
   return (
-    <section className="relative py-12 md:py-16 overflow-hidden border-y border-white/[0.06] bg-[#050814]">
+    <section className="relative py-16 lg:py-20 overflow-hidden border-y border-white/[0.06] bg-[#050814]">
       
       {/* Central subtle cyan ambient glow matching live portfolio */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[180px] bg-[radial-gradient(circle,rgba(34,211,238,0.12)_0%,transparent_70%)] pointer-events-none" />

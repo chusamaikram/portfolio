@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Code2, Terminal, Shield, LogOut, LayoutDashboard } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext.jsx';
-import NeonButton from '../ui/NeonButton.jsx';
+import { Menu, X, Code2, Bot } from 'lucide-react';
 
 const NAV_LINKS = [
   { name: 'Home', href: '#home' },
@@ -18,43 +16,49 @@ export const Navbar = ({ onOpenAiChat }) => {
   const [activeSection, setActiveSection] = useState('home');
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth();
 
   const isHomePage = location.pathname === '/';
 
+  // 1. Lightweight Scroll Listener for navbar background
   useEffect(() => {
-    let ticking = false;
-    let currentActive = 'home';
     let currentScrolled = false;
-
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.scrollY > 30;
-          if (scrolled !== currentScrolled) {
-            currentScrolled = scrolled;
-            setIsScrolled(scrolled);
-          }
-          if (isHomePage) {
-            const sections = ['contact', 'testimonials', 'projects', 'about', 'home'];
-            for (const s of sections) {
-              const el = document.getElementById(s);
-              if (el && el.getBoundingClientRect().top <= 180) {
-                if (currentActive !== s) {
-                  currentActive = s;
-                  setActiveSection(s);
-                }
-                break;
-              }
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
+      const scrolled = window.scrollY > 30;
+      if (scrolled !== currentScrolled) {
+        currentScrolled = scrolled;
+        setIsScrolled(scrolled);
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    // 2. High-Performance Asynchronous IntersectionObserver for active section
+    // ZERO getBoundingClientRect(), ZERO layout thrashing, 100% smooth 60 FPS scrolling
+    if (isHomePage) {
+      const sectionIds = ['home', 'about', 'projects', 'testimonials', 'contact'];
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveSection(entry.target.id);
+            }
+          });
+        },
+        { rootMargin: '-20% 0px -55% 0px', threshold: 0 }
+      );
+
+      sectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        observer.disconnect();
+      };
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHomePage]);
 
@@ -124,60 +128,42 @@ export const Navbar = ({ onOpenAiChat }) => {
             })}
           </nav>
 
-          {/* Action Hub */}
+          {/* Action Hub: Only Keep Robotic AI Button */}
           <div className="hidden md:flex items-center gap-3">
-            {/* AI Assistant Button */}
             <button
               onClick={() => onOpenAiChat && onOpenAiChat()}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-cyan-500/10 text-cyan-400 border border-cyan-400/30 text-xs font-mono transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_15px_rgba(34,211,238,0.15)]"
-              title="Launch AI Terminal"
+              className="relative p-2.5 rounded-xl bg-slate-900/80 hover:bg-cyan-500/15 text-cyan-400 border border-cyan-400/40 hover:border-cyan-300 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_15px_rgba(34,211,238,0.2)] group"
+              title="Chat with Cypher"
+              aria-label="Chat with Cypher"
             >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>Ask AI</span>
+              {/* Subtle top optic indicator */}
+              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-400" />
+              </span>
+              <Bot className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
             </button>
-
-            {/* Admin Dashboard / Login Gateway */}
-            {isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <Link to="/dashboard">
-                  <NeonButton size="sm" variant="outline" icon={LayoutDashboard}>
-                    Dashboard
-                  </NeonButton>
-                </Link>
-                <button
-                  onClick={logout}
-                  className="p-2 rounded-xl bg-slate-900 border border-white/10 text-slate-400 hover:text-rose-400 hover:border-rose-400/40 transition-colors"
-                  title="Log Out Admin"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <Link to="/login">
-                <NeonButton size="sm" variant="secondary" icon={Shield}>
-                  Admin
-                </NeonButton>
-              </Link>
-            )}
-
-            {/* Hire Me CTA */}
-            <NeonButton
-              size="sm"
-              variant="primary"
-              onClick={() => handleNavClick('#contact')}
-            >
-              Hire Me
-            </NeonButton>
           </div>
 
           {/* Mobile Menu Hamburger */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-xl bg-slate-900 border border-white/10 text-slate-300 hover:text-white"
-            aria-label="Toggle Mobile Menu"
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex md:hidden items-center gap-2">
+            <button
+              onClick={() => onOpenAiChat && onOpenAiChat()}
+              className="p-2 rounded-xl bg-slate-900/90 border border-cyan-400/30 text-cyan-400"
+              title="Chat with Cypher"
+              aria-label="Chat with Cypher"
+            >
+              <Bot className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-xl bg-slate-900 border border-white/10 text-slate-300 hover:text-white"
+              aria-label="Toggle Mobile Menu"
+            >
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -202,40 +188,9 @@ export const Navbar = ({ onOpenAiChat }) => {
               }}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-mono text-cyan-400 hover:bg-cyan-500/10"
             >
-              <Terminal className="w-4 h-4" />
-              <span>Launch AI Terminal</span>
+              <Bot className="w-4 h-4" />
+              <span>Chat with Cypher</span>
             </button>
-
-            <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full text-center py-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 font-mono text-xs border border-cyan-400/40"
-                  >
-                    Control Dashboard
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      logout();
-                    }}
-                    className="w-full py-2 text-rose-400 text-xs font-mono"
-                  >
-                    Log Out
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full text-center py-2.5 rounded-xl bg-white/10 text-white font-mono text-xs border border-white/10"
-                >
-                  Admin Security Gateway
-                </Link>
-              )}
-            </div>
           </div>
         </div>
       )}
