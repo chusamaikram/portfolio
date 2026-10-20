@@ -34,7 +34,7 @@
     @apply border-border;
   }
   html {
-    scroll-behavior: smooth;
+    /* Fast, hardware-accelerated 1:1 scrolling response */
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;

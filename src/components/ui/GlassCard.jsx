@@ -23,7 +23,7 @@ export const GlassCard = ({
     <div
       onClick={onClick}
       className={cn(
-        'relative rounded-2xl bg-[#0b1329]/70 backdrop-blur-xl border border-white/10 transition-all duration-300',
+        'relative rounded-2xl bg-[#0b1329]/90 border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.36)] transition-all duration-300',
         hoverEffect && 'hover:-translate-y-1',
         glowStyles[glowColor] || glowStyles.cyan,
         onClick && 'cursor-pointer',

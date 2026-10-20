@@ -15,11 +15,11 @@ export const HomePage = () => {
   return (
     <div className="min-h-screen bg-[#050814] text-slate-100 overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
       
-      {/* Dynamic ambient background gradients */}
+      {/* Dynamic ambient background gradients - GPU-accelerated pre-rasterized radial glows */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px]" />
-        <div className="absolute top-1/3 right-1/4 w-[450px] h-[450px] bg-blue-600/10 rounded-full blur-[130px]" />
-        <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(34,211,238,0.12)_0%,transparent_70%)]" />
+        <div className="absolute top-1/3 right-1/4 w-[550px] h-[550px] bg-[radial-gradient(circle,rgba(59,130,246,0.10)_0%,transparent_70%)]" />
+        <div className="absolute bottom-1/4 left-1/3 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(168,85,247,0.06)_0%,transparent_70%)]" />
       </div>
 
       <Navbar onOpenAiChat={() => setIsAiOpen(true)} />

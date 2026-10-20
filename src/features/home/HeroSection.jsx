@@ -15,9 +15,9 @@ export const HeroSection = ({ onOpenAiChat }) => {
 
   return (
     <section id="home" className="relative min-h-screen pt-28 pb-16 md:py-32 flex items-center justify-center overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background ambient lighting - pre-computed radial gradients without blur filters */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[radial-gradient(circle,rgba(34,211,238,0.12)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-[450px] h-[450px] bg-[radial-gradient(circle,rgba(59,130,246,0.1)_0%,transparent_70%)] pointer-events-none" />
 
       {/* Grid cyber overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
@@ -29,9 +29,9 @@ export const HeroSection = ({ onOpenAiChat }) => {
           <div className="lg:col-span-7 text-center lg:text-left space-y-6">
             
             {/* System Status Pill */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-400/30 text-cyan-300 text-xs font-mono tracking-wider uppercase shadow-[0_0_20px_rgba(34,211,238,0.15)] backdrop-blur-md">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-cyan-400/40 text-cyan-300 text-xs font-mono tracking-wider uppercase shadow-[0_0_20px_rgba(34,211,238,0.15)]">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span>USAMA-OS v2.4 // ARCHITECTURE STACK ONLINE</span>
+              <span>USAMA-OS v3.0 // ARCHITECTURAL KERNEL READY</span>
             </div>
 
             {/* Main Headline */}
@@ -45,20 +45,20 @@ export const HeroSection = ({ onOpenAiChat }) => {
 
             {/* Subheading / Bio */}
             <p className="text-lg sm:text-xl text-slate-300/90 font-light max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Hello, I’m <strong className="text-cyan-300 font-semibold">Usama Ikram</strong> — Frontend Web Developer & UI Architect. I specialize in enterprise React 19 ecosystems, responsive design engineering, and ultra-smooth WebGL interfaces.
+              Hello, I’m <strong className="text-cyan-300 font-semibold">Usama Ikram</strong> — Principal Frontend Architect & UI Engineer. Specialized in enterprise React 19 ecosystems, responsive design engineering, and ultra-smooth WebGL interfaces.
             </p>
 
-            {/* Quick Specs telemetry grid */}
+            {/* Quick Specs telemetry grid - 60 FPS Optimized */}
             <div className="grid grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0 pt-2 pb-2">
-              <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-sm text-center lg:text-left">
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10 text-center lg:text-left">
                 <div className="font-mono text-cyan-400 font-bold text-lg sm:text-xl">60 FPS</div>
                 <div className="text-[11px] text-slate-400 font-mono">Render Target</div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-sm text-center lg:text-left">
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10 text-center lg:text-left">
                 <div className="font-mono text-cyan-400 font-bold text-lg sm:text-xl">99.8%</div>
-                <div className="text-[11px] text-slate-400 font-mono">Uptime SLA</div>
+                <div className="text-[11px] text-slate-400 font-mono">Clean Code SLA</div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-sm text-center lg:text-left">
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10 text-center lg:text-left">
                 <div className="font-mono text-cyan-400 font-bold text-lg sm:text-xl">React 19</div>
                 <div className="text-[11px] text-slate-400 font-mono">Modern Core</div>
               </div>

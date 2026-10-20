@@ -23,17 +23,34 @@ export const Navbar = ({ onOpenAiChat }) => {
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
+    let ticking = false;
+    let currentActive = 'home';
+    let currentScrolled = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
-      if (isHomePage) {
-        const sections = ['contact', 'testimonials', 'projects', 'about', 'home'];
-        for (const s of sections) {
-          const el = document.getElementById(s);
-          if (el && el.getBoundingClientRect().top <= 160) {
-            setActiveSection(s);
-            break;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 30;
+          if (scrolled !== currentScrolled) {
+            currentScrolled = scrolled;
+            setIsScrolled(scrolled);
           }
-        }
+          if (isHomePage) {
+            const sections = ['contact', 'testimonials', 'projects', 'about', 'home'];
+            for (const s of sections) {
+              const el = document.getElementById(s);
+              if (el && el.getBoundingClientRect().top <= 180) {
+                if (currentActive !== s) {
+                  currentActive = s;
+                  setActiveSection(s);
+                }
+                break;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -57,7 +74,7 @@ export const Navbar = ({ onOpenAiChat }) => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#060a16]/85 backdrop-blur-xl border-b border-cyan-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-3'
+          ? 'bg-[#060a16]/95 border-b border-cyan-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-3'
           : 'bg-transparent py-5'
       }`}
     >

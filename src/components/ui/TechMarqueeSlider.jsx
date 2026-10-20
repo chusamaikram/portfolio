@@ -1,27 +1,27 @@
 import React from 'react';
 
 const ROW_1_TECHS = [
-  { name: 'Next.js' },
+  { name: 'JavaScript' },
+  { name: 'Next.js', highlighted: true },
   { name: 'jQuery' },
   { name: 'Bootstrap' },
   { name: 'Tailwind CSS', highlighted: true },
   { name: 'HTML5' },
   { name: 'CSS3' },
-  { name: 'JavaScript' },
   { name: 'TypeScript' },
   { name: 'React.js', highlighted: true },
   { name: 'Redux Toolkit' },
   { name: 'Framer Motion' },
-  { name: 'Three.js / R3F' },
+  { name: 'Three.js / R3F', highlighted: true },
   { name: 'Echarts' },
 ];
 
 const ROW_2_TECHS = [
   { name: 'Vercel' },
-  { name: 'Node.js' },
+  { name: 'Node.js', highlighted: true },
   { name: 'npm' },
   { name: 'Webpack' },
-  { name: 'Figma' },
+  { name: 'Figma', highlighted: true },
   { name: 'Git' },
   { name: 'GitHub' },
   { name: 'VS Code' },
@@ -29,7 +29,7 @@ const ROW_2_TECHS = [
   { name: 'Python' },
   { name: 'REST APIs' },
   { name: 'Postman' },
-  { name: 'Docker' },
+  { name: 'Docker', highlighted: true },
   { name: 'Vite' },
 ];
 
@@ -42,7 +42,7 @@ export const TechMarqueeSlider = () => {
     <section className="relative py-12 md:py-16 overflow-hidden border-y border-white/[0.06] bg-[#050814]">
       
       {/* Central subtle cyan ambient glow matching live portfolio */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[160px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[180px] bg-[radial-gradient(circle,rgba(34,211,238,0.12)_0%,transparent_70%)] pointer-events-none" />
 
       {/* Subtitle Header */}
       <div className="relative z-10 text-center mb-8 px-4">
@@ -66,8 +66,8 @@ export const TechMarqueeSlider = () => {
                 key={`r1-${tech.name}-${idx}`}
                 className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-300 cursor-default ${
                   tech.highlighted
-                    ? 'bg-[#081b29] border border-cyan-400 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.25)] hover:shadow-[0_0_24px_rgba(34,211,238,0.4)] hover:scale-105'
-                    : 'bg-[#0b1220]/90 border border-white/10 text-slate-300 hover:text-white hover:border-white/25 hover:bg-[#111a2e] hover:scale-105'
+                    ? 'bg-[#081b29] border border-cyan-400 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.25)] hover:shadow-[0_0_24px_rgba(34,211,238,0.45)] hover:scale-105'
+                    : 'bg-[#0b1220]/90 border border-white/10 text-slate-300 hover:bg-[#081b29] hover:border-cyan-400 hover:text-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.35)] hover:scale-105'
                 }`}
               >
                 {tech.name}
@@ -84,8 +84,8 @@ export const TechMarqueeSlider = () => {
                 key={`r2-${tech.name}-${idx}`}
                 className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-300 cursor-default ${
                   tech.highlighted
-                    ? 'bg-[#081b29] border border-cyan-400 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.25)] hover:shadow-[0_0_24px_rgba(34,211,238,0.4)] hover:scale-105'
-                    : 'bg-[#0b1220]/90 border border-white/10 text-slate-300 hover:text-white hover:border-white/25 hover:bg-[#111a2e] hover:scale-105'
+                    ? 'bg-[#081b29] border border-cyan-400 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.25)] hover:shadow-[0_0_24px_rgba(34,211,238,0.45)] hover:scale-105'
+                    : 'bg-[#0b1220]/90 border border-white/10 text-slate-300 hover:bg-[#081b29] hover:border-cyan-400 hover:text-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.35)] hover:scale-105'
                 }`}
               >
                 {tech.name}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, Github, Sparkles, Terminal, Code2 } from 'lucide-react';
+import { ExternalLink, Github, Sparkles, Terminal, Code2, ArrowUpRight, Layers } from 'lucide-react';
 import GlassCard from '../../components/ui/GlassCard.jsx';
 import SectionHeader from '../../components/ui/SectionHeader.jsx';
 import TechBadge from '../../components/ui/TechBadge.jsx';
@@ -9,24 +8,17 @@ import portfolioService from '../../services/portfolio.service.js';
 
 const CATEGORIES = ['All', 'Featured', 'Web App', 'Dashboard', 'Portfolio'];
 
-// Lightweight 3D Tilt Card using Framer Motion
-const ProjectCard = ({ project, index, onAskAi }) => {
+// High-Performance 60FPS Project Card with pure hardware-accelerated CSS transforms
+const ProjectCard = ({ project, onAskAi }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.4, delay: index * 0.08 }}
-      whileHover={{ y: -6, transition: { duration: 0.2 } }}
-      className="h-full"
-    >
+    <div className="h-full transition-all duration-300 hover:-translate-y-2">
       <GlassCard
         cyberCorners
         glowColor="cyan"
-        className="h-full flex flex-col justify-between overflow-hidden group border-white/10 hover:border-cyan-400/40"
+        className="h-full flex flex-col justify-between overflow-hidden group border-white/10 hover:border-cyan-400/50"
       >
         <div>
-          {/* Project Image Viewport with Scanner Overlay */}
+          {/* Project Image Viewport */}
           <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-950 border-b border-white/10">
             <img
               src={project.image}
@@ -35,36 +27,37 @@ const ProjectCard = ({ project, index, onAskAi }) => {
               className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
             />
             
-            {/* Top badges */}
+            {/* Top Badges */}
             <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-              <span className="px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur-md border border-white/15 text-slate-300 font-mono text-[11px]">
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950/90 border border-white/15 text-slate-300 font-mono text-[11px]">
                 {project.category}
               </span>
               {project.featured && (
-                <span className="px-2.5 py-1 rounded-md bg-cyan-500/20 backdrop-blur-md border border-cyan-400/40 text-cyan-300 font-mono text-[11px] font-semibold flex items-center gap-1 shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                <span className="px-2.5 py-1 rounded-lg bg-cyan-950/90 border border-cyan-400/50 text-cyan-300 font-mono text-[11px] font-semibold flex items-center gap-1 shadow-[0_0_15px_rgba(34,211,238,0.3)]">
                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                   FEATURED
                 </span>
               )}
             </div>
 
-            {/* Hover cyber grid overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#080e1e] via-transparent to-transparent opacity-80" />
+            {/* Gradient shadow overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#080e1e] via-transparent to-transparent opacity-80 pointer-events-none" />
           </div>
 
           {/* Project Details */}
           <div className="p-6">
-            <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2 line-clamp-1">
-              {project.title}
+            <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2 line-clamp-1 flex items-center justify-between">
+              <span>{project.title}</span>
+              <ArrowUpRight className="w-4 h-4 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             </h3>
 
-            <p className="text-slate-300/80 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-3">
+            <p className="text-slate-300/80 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-3 font-light">
               {project.description}
             </p>
 
-            {/* Architecture Highlights if available */}
+            {/* Architecture Highlights */}
             {project.architecture && (
-              <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/5 mb-4 text-[11px] font-mono text-cyan-400/90 flex items-start gap-1.5">
+              <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 mb-4 text-[11px] font-mono text-cyan-400/90 flex items-start gap-1.5">
                 <Code2 className="w-3.5 h-3.5 shrink-0 mt-0.5 text-cyan-400" />
                 <span className="line-clamp-2">{project.architecture}</span>
               </div>
@@ -125,7 +118,7 @@ const ProjectCard = ({ project, index, onAskAi }) => {
           </button>
         </div>
       </GlassCard>
-    </motion.div>
+    </div>
   );
 };
 
@@ -155,7 +148,6 @@ export const ProjectsGrid = ({ onOpenAiChat }) => {
   }, []);
 
   const handleAskAi = (projectTitle) => {
-    // Dispatch global event for AI Terminal
     window.dispatchEvent(
       new CustomEvent('open-ai-chat', {
         detail: {
@@ -185,21 +177,37 @@ export const ProjectsGrid = ({ onOpenAiChat }) => {
           subtitle="A curated showcase of responsive platforms, dashboard analytics, and UI/UX replicas built to high architectural standards."
         />
 
-        {/* Filter Categories */}
+        {/* Filter Categories Toolbar */}
         <div className="flex justify-center gap-2 mb-12 flex-wrap">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono font-medium transition-all duration-300 cursor-pointer ${
-                selectedCategory === cat
-                  ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold shadow-[0_0_20px_rgba(34,211,238,0.3)]'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-white/10 hover:border-cyan-400/30'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const count =
+              cat === 'All'
+                ? projects.length
+                : cat === 'Featured'
+                ? projects.filter((p) => p.featured).length
+                : projects.filter((p) => p.category?.toLowerCase() === cat.toLowerCase()).length;
+
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono font-medium transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+                  selectedCategory === cat
+                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold shadow-[0_0_20px_rgba(34,211,238,0.3)]'
+                    : 'bg-slate-900/80 text-slate-400 hover:text-white border border-white/10 hover:border-cyan-400/30'
+                }`}
+              >
+                <span>{cat}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    selectedCategory === cat ? 'bg-slate-950/20 text-slate-900 font-bold' : 'bg-white/10 text-slate-400'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Projects Grid */}
@@ -212,11 +220,10 @@ export const ProjectsGrid = ({ onOpenAiChat }) => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project, idx) => (
+            {filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}
-                index={idx}
                 onAskAi={handleAskAi}
               />
             ))}
